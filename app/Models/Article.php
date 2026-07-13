@@ -18,7 +18,10 @@ class Article extends Model
         'sort_when_creating' => true,
     ];
 
-    protected $dates = ['delete_at','release_at'];
+    protected $casts = [
+        'release_at' => 'datetime',
+        'delete_at' => 'datetime',
+    ];
 
     public function cate()
     {

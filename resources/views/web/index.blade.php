@@ -1121,7 +1121,7 @@
         <h2 class="main-title wow animate__animated animate__fadeInUp">最新減肥知識分享</h2>
         <div class="news-main">
             <div class="image-wrap wow animate__animated animate__fadeInUp">
-                <div class="box epilogue-img" style="background-image: url({{ asset('uploads/'.app('cache.config')->get('promote_image')) }})"></div>
+                <div class="box epilogue-img" style="{{ ($promote = app('cache.config')->get('promote_image')) ? 'background-image: url(' . asset('uploads/'.$promote) . ')' : '' }}"></div>
             </div>
             <div class="news-wrap">
                 @foreach($news as $item)
