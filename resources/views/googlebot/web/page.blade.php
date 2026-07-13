@@ -1,0 +1,39 @@
+@extends('web::layout')
+
+@section('style')
+    @parent
+    <link rel="stylesheet" type="text/css" href="{{ asset('static/less/page.css') }}?ver={{ config('app.asset_version') }}"/>
+
+@stop
+
+@section('script')
+    @parent
+    <script>
+        document.domain = "0nlinexenical.com";
+        function setIframeHeight(iframe) {
+            if (iframe) {
+                var iframeWin = iframe.contentWindow || iframe.contentDocument.parentWindow;
+                if (iframeWin.document.body) {
+                    iframe.height = iframeWin.document.documentElement.scrollHeight || iframeWin.document.body.scrollHeight;
+                }}
+        };
+        window.onload = function () {
+            setIframeHeight(document.getElementById('external-frame'));
+        };
+    </script>
+@stop
+
+@section('content')
+    <h1 class="main-title">{{ $title_gb }}</h1>
+    @if(isset($html_code) && $html_code)
+        <iframe id="external-frame" width="100%" style="min-height: 100vh" src="{{ asset_upload('article_html/'.str_replace('.zip','',$html_code).'/index.html') }}"  frameborder="0" scrolling="no" onload="setIframeHeight(this)"></iframe>
+    @else
+        <div class="page-body">
+            {!! $content_gb !!}
+        </div>
+    @endif
+@endsection
+
+@section('breadcrumb')
+    <li class="active">{{ $title_gb }}</li>
+@stop

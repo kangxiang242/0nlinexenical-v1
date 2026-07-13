@@ -1,0 +1,33 @@
+.main-wrapper {
+  max-width: 1024px;
+  margin: 80px auto 100px;
+  padding: 0 10px;
+}
+.main-wrapper .main-title {
+  padding-top: 100px;
+}
+@media screen and (max-width: 1024px) {
+  .main-wrapper .main-title {
+    padding-top: 30px;
+  }
+}
+.main-wrapper .page-body {
+  margin-top: 40px;
+  padding: 0 20px;
+}
+.main-wrapper .page-body h2,
+.main-wrapper .page-body h3 {
+  font-weight: 500;
+  margin-top: 30px;
+}
+.main-wrapper .page-body p,
+.main-wrapper .page-body span {
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+@media screen and (max-width: 1024px) {
+  .main-wrapper .page-body p,
+  .main-wrapper .page-body span {
+    font-size: 14px;
+  }
+}

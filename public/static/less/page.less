@@ -1,0 +1,32 @@
+@block-bg: #ffdec1;
+@main-color: #ff9b3f;
+
+.main-wrapper{
+    max-width: 1024px;
+    margin: 80px auto 100px;
+    padding: 0 10px;
+
+    .main-title{
+        padding-top: 100px;
+        @media screen and (max-width: 1024px){
+            padding-top: 30px;
+        }
+
+    }
+    .page-body{
+        margin-top: 40px;
+        padding: 0 20px;
+        h2,h3{
+            font-weight: 500;
+            margin-top: 30px;
+        }
+        p,span{
+            line-height: 1.6;
+            margin-bottom: 10px;
+            @media screen and (max-width: 1024px){
+                font-size: 14px;
+            }
+        }
+    }
+    
+}
