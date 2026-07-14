@@ -4,51 +4,32 @@ namespace App\Models;
 
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Product extends Model
 {
-    
+
+    protected $sortable = [
+        // 设置排序字段名称
+        'order_column_name' => 'sort',
+        // 是否在创建时自动排序，此参数建议设置为true
+        'sort_when_creating' => true,
+    ];
+
 
     protected $fillable = [
-        'name','brand_id','code','img','m_img','subtitle','price','market_price','status','is_stock','sort','tags','describe','collect_code','added'
+        'category_id','name','img','m_img','subtitle','price','market_price','status','is_stock','sort','tags','quantity','label','describe'
     ];
 
-    protected $casts = [
-        'added'=>'json',
-    ];
 
-    /**
-     * 定义你的关联模型.
-     *
-     * @return BelongsToMany
-     */
-    public function cate(): BelongsToMany
+    public function category()
     {
-        $pivotTable = 'product_cates'; // 中间表
-
-        $relatedModel = Cate::class;
-
-        return $this->belongsToMany($relatedModel, $pivotTable, 'product_id', 'cate_id');
+        return $this->belongsTo(Category::class);
     }
 
-    public function productCate(){
-        return $this->hasMany(ProductCate::class,'product_id','id');
-    }
-
-    public function tags()
+    public function getImgUrlAttribute()
     {
-
-        return $this->belongsToMany(Tag::class,'product_tags','product_id','tag_id');
+        $img = $this->img;
+        if (empty($img)) return null;
+        return url("storage/" . ltrim($img, "/"));
     }
-
-    public function attr(){
-        return $this->hasMany(ProductAttr::class,'product_id','id');
-    }
-
-    public function addeds()
-    {
-        return $this->belongsToMany(Product::class,'product_addeds','product_id','added_product_id');
-    }
-
 }

@@ -31,7 +31,7 @@
     @if(config('app.m_url'))
         <link rel="alternate" media="only screen and (max-width: 640px)" href="{{ config('app.m_url') }}/{{ trim(request()->path(),'/') }}">
     @endif
-    <link rel="shortcut icon" href="{{ \App\Services\ConfigService::get('favicon')?asset('uploads/'.\App\Services\ConfigService::get('favicon')):'/favicon.ico' }}">
+    <link rel="shortcut icon" href="{{ \App\Services\ConfigService::get('favicon')?asset('uploads/'.\App\Services\ConfigService::get('favicon')):'/favicon.svg' }}">
     @section('style')
         <link rel="stylesheet" type="text/css" href="{{ asset('static/css/style.css') }}?ver={{ config('app.asset_version') }}"/>
         <link rel="stylesheet" type="text/css" href="{{ asset('static/css/common.css') }}?ver={{ config('app.asset_version') }}"/>

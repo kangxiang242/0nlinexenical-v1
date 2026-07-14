@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Cate extends Model 
 {
+    protected $table = 'categories';
 
     /**
      * 获取上级
