@@ -87,7 +87,42 @@
             }
         }
     </style>
+    @php
+        $trackingPath = trim(request()->path(), '/');
+        $trackingPageType = match (true) {
+            $trackingPath === '' => 'home',
+            request()->is('product') => 'product_list',
+            request()->is('product/*') => 'product_detail',
+            request()->is('checkout/*'), request()->is('shopping/*') => 'checkout',
+            request()->is('bmi') => 'bmi',
+            request()->is('bmr') => 'bmr',
+            request()->is('body-fat') => 'body_fat',
+            request()->is('news') => 'news_list',
+            request()->is('news/*') => 'news_detail',
+            request()->is('contact'), request()->is('message') => 'message',
+            request()->is('check') => 'order_check',
+            default => 'cms',
+        };
+        $trackingGoodsId = isset($goods) ? $goods->id : null;
+        $trackingArticleId = isset($news) ? $news->id : null;
+    @endphp
+    <script>
+        window.__TRACKING_CONFIG__ = @json([
+            'endpoint' => '/observer/store',
+            'webHost' => request()->getHost(),
+            'enabled' => true,
+            'device' => 'web',
+            'assetVersion' => config('app.asset_version'),
+        ]);
+        window.__TRACKING_PAGE__ = @json([
+            'page_type' => $trackingPageType,
+            'goods_id' => $trackingGoodsId,
+            'article_id' => $trackingArticleId,
+            'calc_type' => in_array($trackingPageType, ['bmi', 'bmr', 'body_fat'], true) ? $trackingPageType : null,
+        ]);
+    </script>
     <script src="{{ asset('static/js/jquery.min.js') }}?ver={{ config('app.asset_version') }}"></script>
+    <script src="{{ asset('static/js/tracker.js') }}?ver={{ config('app.asset_version') }}"></script>
     <script src="{{ asset('static/js/observer.js') }}?ver={{ config('app.asset_version') }}"></script>
     <script src="{{ asset('static/wow/wow.min.js') }}?ver={{ config('app.asset_version') }}"></script>
     <script src="{{ asset('static/jquery_lazyload/jquery.lazyload.min.js') }}?ver={{ config('app.asset_version') }}"></script>
@@ -99,14 +134,7 @@
 
     <script>
         var is_ajax_get_cart = 0;
-        var flash_data = '{!! session()->get('flash') !!}';
-
-        if(flash_data){
-            flash_data = JSON.parse('{!! session()->get('flash') !!}');
-
-        }else{
-            flash_data = false;
-        }
+        var flash_data = @json(session()->get('flash') ? json_decode(session()->get('flash'), true) : false);
 
         var province = [];
 
@@ -129,19 +157,19 @@
 </head>
 <body class=" {{ request()->is('/')?"page-index -loading":"" }} ">
 
-    <header class="main-header">
+    <header class="main-header" data-track-section-view data-track-section="layout.header" data-track-section-label="頂部導航">
         <div class="wrapper">
             <a class="logo" href="{{ URL::to('/') }}">
                 <img class="fra fra-1" src="{{ asset('static/img/lg/fra-1.png') }}" alt="logo">
                 <img class="fra fra-2" src="{{ asset('static/img/lg/fra-2.png') }}" alt="logo">
                 <img class="fra fra-3"  src="{{ asset('static/img/lg/fra-3.png') }}" alt="logo">
             </a>
-            <div class="base-sec">
+            <nav class="base-sec">
                 <ul class="base">
                     <li><a href="{{ URL::to('/') }}">首頁</a></li>
-                    <li><a href="{{ URL::to('xenical') }}">瞭解羅氏鮮</a></li>
-                    <li><a href="{{ URL::to('faq') }}">常見疑問解答Q&A</a></li>
-                    <li><a href="{{ URL::to('news') }}">減肥知識分享</a></li>
+                    <li><a href="{{ URL::to('xenical') }}">瞭解羅氏鮮減肥藥如何降低BMI</a></li>
+                    <li><a href="{{ URL::to('faq') }}">BMI與減肥常見疑問解答Q&A</a></li>
+                    <li><a href="{{ URL::to('news') }}">BMI管理與減肥知識分享</a></li>
                     <li class="has-dropdown">
                         <span class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false">健康計算器</span>
                         <ul class="dropdown">
@@ -150,122 +178,128 @@
                             <li><a class="btn btn-ef2" href="{{ URL::to('body-fat') }}" data-observer="頂部-瘦身計算機">體脂肪率計算機<i class="iconfont">&#xe684;</i></a></li>
                         </ul>
                     </li>
-                    <li><a class="btn shop-btn go-btn" href="{{ URL::to('product') }}" data-observer="頂部-線上訂購">訂購羅氏鮮<i class="iconfont">&#xe684;</i></a></li>
+                    <li><a class="btn shop-btn go-btn" href="{{ URL::to('product') }}" data-observer="頂部-線上訂購">訂購羅氏鮮減肥藥幫助妳健康減肥，輕鬆降低BMI<i class="iconfont">&#xe684;</i></a></li>
                 </ul>
-            </div>
-            <div class="show-menu"><i class="iconfont">&#xe62c;</i></div>
+            </nav>
+            <button class="show-menu" type="button"><i class="iconfont">&#xe62c;</i></button>
         </div>
     </header>
 
     @section('menu')
-        <div class="main-menu">
-            <div class="close-menu"><i class="iconfont">&#xeca0;</i></div>
+        <nav class="main-menu">
+            <button class="close-menu" type="button"><i class="iconfont">&#xeca0;</i></button>
             <div class="menu">
                 <p class="en-title">Home</p>
-                <p class="nav-title nav-home"><a href="{{ URL::to('/') }}">首頁<i class="iconfont">&#xe775;</i></a></p>
+                <h2 class="nav-title nav-home"><a href="{{ URL::to('/') }}">首頁<i class="iconfont">&#xe775;</i></a></h2>
             </div>
-            <div class="menu">
+            <section class="menu">
                 <p class="en-title">Product</p>
+                <h2 class="nav-title visually-hidden">BMI減肥產品</h2>
                 <ul class="nav">
-                    <li><a href="{{ URL::to('xenical') }}">瞭解羅氏鮮<i class="iconfont">&#xe775;</i></a></li>
-                    <li><a href="{{ URL::to('product') }}">羅氏鮮線上訂購<i class="iconfont">&#xe775;</i></a></li>
+                    <li><a href="{{ URL::to('xenical') }}">瞭解羅氏鮮減肥藥如何降低BMI<i class="iconfont">&#xe775;</i></a></li>
+                    <li><a href="{{ URL::to('product') }}">羅氏鮮減肥藥線上訂購，輕鬆降低BMI<i class="iconfont">&#xe775;</i></a></li>
                 </ul>
-            </div>
-            <div class="menu">
+            </section>
+            <section class="menu">
                 <p class="en-title">Slimming</p>
+                <h2 class="nav-title visually-hidden">BMI減肥專欄</h2>
                 <ul class="nav">
                     <li><a href="{{ URL::to('bmi') }}">BMI計算機<i class="iconfont">&#xe775;</i></a></li>
-                    <li><a href="{{ URL::to('bmr') }}">BMR與TEDD計算機<i class="iconfont">&#xe775;</i></a></li>
+                    <li><a href="{{ URL::to('bmr') }}">BMR與TDEE計算機<i class="iconfont">&#xe775;</i></a></li>
                     <li><a href="{{ URL::to('body-fat') }}">體脂肪率計算機<i class="iconfont">&#xe775;</i></a></li>
-                    <li><a href="{{ URL::to('faq') }}">減肥常見疑問解答<i class="iconfont">&#xe775;</i></a></li>
-                    <li><a href="{{ URL::to('news') }}">減肥知識分享<i class="iconfont">&#xe775;</i></a></li>
+                    <li><a href="{{ URL::to('faq') }}">BMI與減肥常見疑問解答<i class="iconfont">&#xe775;</i></a></li>
+                    <li><a href="{{ URL::to('news') }}">BMI管理與減肥知識分享<i class="iconfont">&#xe775;</i></a></li>
                 </ul>
-            </div>
-            <div class="menu">
+            </section>
+            <section class="menu">
                 <p class="en-title">Service</p>
+                <h2 class="nav-title visually-hidden">BMI減肥產品購物服務</h2>
                 <ul class="nav">
-                    <li><a href="{{ URL::to('guide') }}">減肥藥訂購指南<i class="iconfont">&#xe775;</i></a></li>
-                    <li><a href="{{ URL::to('payment-delivery') }}">付款與配送說明<i class="iconfont">&#xe775;</i></a></li>
-                    <li><a href="{{ URL::to('after-sales') }}">售後服務<i class="iconfont">&#xe775;</i></a></li>
-                    <li><a href="{{ URL::to('check') }}">訂單追蹤<i class="iconfont">&#xe775;</i></a></li>
-                    <li><a href="{{ URL::to('message') }}">取得協助<i class="iconfont">&#xe775;</i></a></li>
+                    <li><a href="{{ URL::to('guide') }}">羅氏鮮減肥藥訂購指南，BMI控制從下單開始<i class="iconfont">&#xe775;</i></a></li>
+                    <li><a href="{{ URL::to('payment-delivery') }}">付款與配送說明，安心訂購降低BMI的減肥藥羅氏鮮<i class="iconfont">&#xe775;</i></a></li>
+                    <li><a href="{{ URL::to('after-sales') }}">羅氏鮮減肥藥售後服務，BMI用藥諮詢<i class="iconfont">&#xe775;</i></a></li>
+                    <li><a href="{{ URL::to('check') }}">羅氏鮮減肥藥訂單追蹤，控制BMI不用等<i class="iconfont">&#xe775;</i></a></li>
+                    <li><a href="{{ URL::to('message') }}">取得羅氏鮮減肥藥官網協助，線上解答BMI控制常見問題<i class="iconfont">&#xe775;</i></a></li>
                     <li><a href="{{ URL::to('privacy') }}">隱私權政策<i class="iconfont">&#xe775;</i></a></li>
                 </ul>
-            </div>
-        </div>
+            </section>
+        </nav>
     @show
 
-    <div class="main-wrapper">
+    <main class="main-wrapper">
         @section('banners')
             @if($layout['banners'] && !$layout['banners']->isEmpty())
-                <div class="banner-section">
+                <header class="banner-section">
                     @yield('embed-banner')
                         @foreach($layout['banners'] as $item)
                             @if($item->img)
                                 <picture class="banner-img">
                                     <source media="(max-width: 1024px)" srcset="{{ asset_upload($item->m_img) }}">
                                     <source media="(min-width: 1025px)" srcset="{{ asset('uploads/'.$item->img) }}">
-                                    <img src="{{ asset('uploads/'.$item->img) }}" alt="{{ $item->alt }}">
+                                    <img src="{{ asset('uploads/'.$item->img) }}" loading="lazy"  alt="{{ $item->alt }}">
                                 </picture>
                             @endif
                         @endforeach
-                </div>
+                </header>
             @endif
         @show
         @yield('content')
-    </div>
+    </main>
 
     @hasSection('breadcrumb')
         @if(!request()->is('/'))
-            <ul class="breadcrumb">
-                <li ><a href="{{ URL::to('/') }}">首頁</a></li>
-                @yield('breadcrumb')
-            </ul>
+            <nav>
+                <ol class="breadcrumb">
+                    <li ><a href="{{ URL::to('/') }}">首頁</a></li>
+                    @yield('breadcrumb')
+                </ol>
+            </nav>
         @endif
     @endif
 
-    <footer>
+    <footer data-track-section-view data-track-section="layout.footer" data-track-section-label="頁尾導航">
         <div class="wrapper column">
-            <div class="footer-menu">
-                <div class="menu">
+            <nav class="footer-menu">
+                <section class="menu">
                     <p class="en-title">Product</p>
-                    <p class="footer-title">減肥產品</p>
+                    <h2 class="footer-title">BMI減肥產品</h2>
                     <ul class="nav">
-                        <li><a href="{{ URL::to('xenical') }}">瞭解羅氏鮮<i class="iconfont">&#xe775;</i></a></li>
-                        <li><a href="{{ URL::to('product') }}">訂購羅氏鮮減肥藥<i class="iconfont">&#xe775;</i></a></li>
+                        <li><a href="{{ URL::to('xenical') }}">瞭解羅氏鮮減肥藥如何降低BMI<i class="iconfont">&#xe775;</i></a></li>
+                        <li><a href="{{ URL::to('product') }}">訂購羅氏鮮減肥藥幫助妳健康減肥，輕鬆降低BMI<i class="iconfont">&#xe775;</i></a></li>
+                        
                     </ul>
-                </div>
-                <div class="menu">
+                </section>
+                <section class="menu">
                     <p class="en-title">Slimming</p>
-                    <p class="footer-title">減肥專欄</p>
+                    <h2 class="footer-title">BMI減肥專欄</h2>
                     <ul class="nav">
                         <li><a href="{{ URL::to('bmi') }}">BMI計算機<i class="iconfont">&#xe775;</i></a></li>
-                        <li><a href="{{ URL::to('bmr') }}">BMR與TEDD計算機<i class="iconfont">&#xe775;</i></a></li>
+                        <li><a href="{{ URL::to('bmr') }}">BMR與TDEE計算機<i class="iconfont">&#xe775;</i></a></li>
                         <li><a href="{{ URL::to('body-fat') }}">體脂肪率計算機<i class="iconfont">&#xe775;</i></a></li>
-                        <li><a href="{{ URL::to('faq') }}">減肥常見疑問解答Q&A<i class="iconfont">&#xe775;</i></a></li>
-                        <li><a href="{{ URL::to('news') }}">減肥知識分享<i class="iconfont">&#xe775;</i></a></li>
+                        <li><a href="{{ URL::to('faq') }}">BMI與減肥常見疑問解答Q&A<i class="iconfont">&#xe775;</i></a></li>
+                        <li><a href="{{ URL::to('news') }}">BMI管理與減肥知識分享<i class="iconfont">&#xe775;</i></a></li>
                     </ul>
-                </div>
-                <div class="menu">
+                </section>
+                <section class="menu">
                     <p class="en-title">Service</p>
-                    <p class="footer-title">購物服務</p>
+                    <h2 class="footer-title">BMI減肥產品購物服務</h2>
                     <ul class="nav">
-                        <li><a href="{{ URL::to('guide') }}">減肥藥訂購指南<i class="iconfont">&#xe775;</i></a></li>
-                        <li><a href="{{ URL::to('payment-delivery') }}">付款與配送說明<i class="iconfont">&#xe775;</i></a></li>
-                        <li><a href="{{ URL::to('after-sales') }}">售後服務<i class="iconfont">&#xe775;</i></a></li>
-                        <li><a href="{{ URL::to('check') }}">訂單追蹤<i class="iconfont">&#xe775;</i></a></li>
-                        <li><a href="{{ URL::to('message') }}">取得協助<i class="iconfont">&#xe775;</i></a></li>
-                        <li><a href="{{ URL::to('privacy') }}">隱私權政策<i class="iconfont">&#xe775;</i></a></li>
+                        <li><a href="{{ URL::to('guide') }}">羅氏鮮減肥藥訂購指南，BMI控制從下單開始<i class="iconfont">&#xe775;</i></a></li>
+                        <li><a href="{{ URL::to('payment-delivery') }}">付款與配送說明，安心訂購降低BMI的減肥藥羅氏鮮<i class="iconfont">&#xe775;</i></a></li>
+                        <li><a href="{{ URL::to('after-sales') }}">羅氏鮮減肥藥售後服務，BMI用藥諮詢<i class="iconfont">&#xe775;</i></a></li>
+                        <li><a href="{{ URL::to('check') }}">羅氏鮮減肥藥訂單追蹤，控制BMI不用等<i class="iconfont">&#xe775;</i></a></li>
+                        <li><a href="{{ URL::to('message') }}">取得羅氏鮮減肥藥官網協助，線上解答BMI控制常見問題<i class="iconfont">&#xe775;</i></a></li>
+                        <li><a href="{{ URL::to('privacy') }}">{{ app('cache.config')->get('page_privacy_title') }}<i class="iconfont">&#xe775;</i></a></li>
                     </ul>
-                </div>
+                </section>
                 <a class="buy" href="{{ URL::to('product') }}">
                     <i class="icon iconfont">&#xe64f;</i>
                     <div class="text">
                         <p class="en-title">Buy Online</p>
-                        <p class="footer-title">羅氏鮮線上訂購<i class="arrow-right iconfont">&#xe613;</i></p>
+                        <h3 class="footer-title">羅氏鮮減肥藥線上訂購，輕鬆降低BMI<i class="arrow-right iconfont">&#xe613;</i></h3>
                     </div>
                 </a>
-            </div>
+            </nav>
 
 
             <div class="description">

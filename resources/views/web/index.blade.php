@@ -182,7 +182,6 @@
     <script src="{{ asset('static/js/jquery.marquee.min.js') }}?ver={{ config('app.asset_version') }}"></script>
     <script>
         $(window).resize(function(){
-
             handleVideoResize();
         });
 
@@ -435,6 +434,7 @@
     </script>
 
     <script>
+        // 全局的加載視頻函數，避免重複加載
         function loadVideo(video) {
             if (!video || video.querySelector('source')) {
                 return;
@@ -445,6 +445,7 @@
             const mSrc = video.getAttribute('data-m');
             const src = isMobile ? mSrc : pcSrc;
 
+            // 更新封面圖（根據設備類型）
             const posterPc = video.getAttribute('data-poster-pc');
             const posterM = video.getAttribute('data-poster-m');
             if (posterPc && posterM) {
@@ -458,17 +459,21 @@
             video.load();
         }
         
+        // 播放視頻（在加載完成後）
         function playVideo(video) {
             if (!video) return;
             
+            // 如果視頻還沒有加載，先加載它
             if (!video.querySelector('source')) {
                 loadVideo(video);
                 
+                // 等待視頻可以播放後再播放
                 video.addEventListener('canplay', function playVideoHandler() {
                     video.play().catch(() => {});
                     video.removeEventListener('canplay', playVideoHandler);
                 }, { once: true });
             } else {
+                // 已經加載，直接播放
                 if (video.readyState >= 2) {
                     video.play().catch(() => {});
                 } else {
@@ -481,15 +486,20 @@
         }
         
         document.addEventListener("DOMContentLoaded", function () {
+            // 立即初始化 Swiper（使用封面圖，不需要等待視頻）
             initSwiperVideo();
             
+            // 延遲加載第一個視頻（首屏可見），優化 LCP
+            // 使用 requestIdleCallback 或 setTimeout 延遲加載
             const loadFirstVideo = () => {
                 const initialVideoEls = document.querySelectorAll('.video-el');
                 const firstVideo = initialVideoEls[0];
                 
                 if (firstVideo) {
+                    // 延遲一小段時間後再開始加載視頻，讓封面圖先顯示
                     setTimeout(() => {
                         loadVideo(firstVideo);
+                        // 視頻加載完成後自動播放
                         firstVideo.addEventListener('canplay', function() {
                             playVideo(firstVideo);
                         }, { once: true });
@@ -497,6 +507,7 @@
                 }
             };
             
+            // 使用 requestIdleCallback 如果可用，否則使用 setTimeout
             if ('requestIdleCallback' in window) {
                 requestIdleCallback(loadFirstVideo, { timeout: 2000 });
             } else {
@@ -505,6 +516,7 @@
         });
 
         function initSwiperVideo() {
+            // 避免重複初始化
             if (window._swiperInitialized) return;
             window._swiperInitialized = true;
 
@@ -529,9 +541,11 @@
                 },
                 on: {
                     init: function() {
+                        // Swiper 初始化時，確保第一個幻燈片的封面圖正確顯示
                         const firstSlide = this.slides[this.activeIndex];
                         const firstVideo = firstSlide?.querySelector("video");
                         if (firstVideo) {
+                            // 更新封面圖（根據設備類型）
                             const isMobile = window.innerWidth <= 1024;
                             const posterPc = firstVideo.getAttribute('data-poster-pc');
                             const posterM = firstVideo.getAttribute('data-poster-m');
@@ -546,6 +560,7 @@
                         const video = slide.querySelector("video");
 
                         if (video) {
+                            // 更新封面圖（根據設備類型）
                             const isMobile = window.innerWidth <= 1024;
                             const posterPc = video.getAttribute('data-poster-pc');
                             const posterM = video.getAttribute('data-poster-m');
@@ -553,6 +568,7 @@
                                 video.poster = isMobile ? posterM : posterPc;
                             }
                             
+                            // 加載並播放當前視頻
                             playVideo(video);
                         }
 
@@ -701,80 +717,12 @@
             });
         });
     </script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            function debounce(func, wait) {
-                let timeout;
-                return function() {
-                    const context = this;
-                    const args = arguments;
-                    clearTimeout(timeout);
-                    timeout = setTimeout(() => func.apply(context, args), wait);
-                };
-            }
-
-            const faqItems = document.querySelectorAll('.faq-item');
-
-            function calculateHeights() {
-                faqItems.forEach(item => {
-                    const question = item.querySelector('.faq-question');
-                    const answer = item.querySelector('.faq-answer');
-
-                    const wasOpen = item.classList.contains('open');
-                    if (!wasOpen) {
-                        item.classList.add('open');
-                        item.offsetHeight;
-                    }
-
-                    const questionHeight = question.offsetHeight;
-                    const fullHeight = item.offsetHeight;
-
-                    item.style.setProperty('--collapsed-height', `${questionHeight}px`);
-                    item.style.setProperty('--expanded-height', `${fullHeight}px`);
-
-                    if (!wasOpen) {
-                        item.classList.remove('open');
-                    }
-                });
-            }
-
-            calculateHeights();
-
-            if (faqItems.length > 0) {
-                faqItems[0].classList.add('open');
-            }
-
-            faqItems.forEach(item => {
-                const question = item.querySelector('.faq-question');
-                question.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const isOpen = item.classList.contains('open');
-                    
-                    faqItems.forEach(otherItem => {
-                        if (otherItem !== item && otherItem.classList.contains('open')) {
-                            otherItem.classList.remove('open');
-                        }
-                    });
-
-                    if (isOpen) {
-                        item.classList.remove('open');
-                    } else {
-                        item.classList.add('open');
-                    }
-                });
-            });
-
-            window.addEventListener('resize', debounce(calculateHeights, 250));
-        });
-    </script>
 @stop
 
 
 @section('content')
-
-    <div class="index-banner">
-        <p class="slogan"> 找到專屬妳的減肥方法<i class="iconfont beat">&#xe784;</i></p>
+    <section class="index-banner" role="region" aria-labelledby="slogan">
+        <h1 class="slogan" id="slogan"> 精準管理BMI，找到專屬妳的減肥減重方法</h1>
         <div class="video-main">
             <div class="swiper-container" id="swiper-video3">
                 <div class="swiper-wrapper">
@@ -821,32 +769,31 @@
             <div class="progress"></div>
             <div class="text-effect" id="text-banner-0">
                 <p class="text-effect-p1">Safety&nbsp;</p>
-                <p class="text-effect-p2">安全減肥</p>
-                <p class="text-effect-p3">穩定減重不傷身</p>
+                <p class="text-effect-p2"><strong>瞭解BMI安全減肥</strong></p>
+                <p class="text-effect-p3">從BMI瞭解妳的身體狀況，穩定減重不傷身</p>
             </div>
             <div class="text-effect" id="text-banner-1" >
                 <p class="text-effect-p1">Effective&nbsp;</p>
-                <p class="text-effect-p2">有效減肥</p>
-                <p class="text-effect-p3">找到適合自己的減重方法</p>
+                <p class="text-effect-p2"><strong>降低BMI有效減肥</strong></p>
+                <p class="text-effect-p3">從計算BMI開始，找到適合自己的減重方法</p>
             </div>
             <div class="text-effect" id="text-banner-2" >
                 <p class="text-effect-p1">Healthy&nbsp;</p>
-                <p class="text-effect-p2">健康減肥</p>
-                <p class="text-effect-p3">減重減脂不再復胖</p>
+                <p class="text-effect-p2"><strong>管理BMI健康減肥</strong></p>
+                <p class="text-effect-p3">關注BMI變化，減重減脂不再復胖</p>
             </div>
-        </div>
-        
-    </div>
+        </div>   
+    </section>
 
-    <div class="bmi wrapper column">
-        <h2 class="main-title">BMI計算工具</h2>
+    <section class="bmi wrapper column" role="region" aria-labelledby="bmi-calc-title">
+        <h2 class="main-title" id="bmi-calc-title">BMI計算工具｜快速評估妳的體重與健康狀態</h2>
         <p class="title-sub">{!! app('cache.config')->get('home_bmi_desc') !!}</p>
         <div class="bmi-wrapper">
             <div class="calculate column">
-                <div class="bmi-modal">
-                    <p class="bmi-title">BMI計算器</p>
+                <header class="bmi-modal">
+                    <h3 class="bmi-title">BMI計算器</h3>
                     <p class="bmi-sub">{!! app('cache.config')->get('page_bmi_subdesc') !!}</p>
-                </div>
+                </header>
                 <form class="evaluate-form" onsubmit="return false;">
                     <div class="form-group">
                         <label class="form-title" for="height">你的身高：</label>
@@ -862,10 +809,10 @@
                         <button class="btn reset" type="reset">重設</button>
                         <button class="btn count btn-ef1" type="button">開始計算</button>
                     </div>
-                    <p class="privacy-note">本計算器僅於瀏覽器端運算，不會傳送或儲存任何輸入資料。如需更多資訊，請參閱<a href="/privacy">隱私權政策</a>。</p>
+                    <p class="privacy-note">本BMI計算器僅於瀏覽器端運算，不會傳送或儲存任何輸入資料。如需更多資訊，請參閱<a href="/privacy" rel="nofollow">隱私權政策</a>。</p>
                 </form>
                 <div class="result">
-                    <p class="result-title">你的BMI結果為</p>
+                    <h4 class="result-title">你的BMI結果為</h4>
                     <p class="result-num" >
                         <span class="digit" id="int1" aria-hidden="true">
                             <span class="digit-inner">
@@ -888,10 +835,10 @@
             </div>
             
             <div class="comparison column">
-                <div class="bmi-modal">
-                    <p class="bmi-title">BMI參照表</p>
+                <header class="bmi-modal">
+                    <h3 class="bmi-title">BMI參照表</h3>
                     <p class="bmi-sub">{!! app('cache.config')->get('page_bmi_subdesc2') !!}</p>
-                </div>
+                </header>
                 <table class="bmi-table">
                     <thead>
                         <tr>
@@ -921,134 +868,137 @@
                 <p class="bmi-sub">資料來源：衛生福利部國民健康署</p>
             </div>
         </div>
-        <p class="more">想了解更多關於 BMI 的知識？<a href="/bmi" class="go-btn btn-ef1">前往BMI詳細介紹<i class="iconfont">&#xe684;</i></a></p>
-    </div>
+        <nav aria-label="延伸閱讀：BMI詳細介紹">
+            <p class="more">想了解更多關於 BMI 的知識？<a href="/bmi" class="go-btn btn-ef1">前往BMI詳細介紹<i class="iconfont">&#xe684;</i></a></p>
+        </nav>
+    </section>
 
     @foreach($cates as $cate)
-    <div class="method wrapper column">
-        <h2 class="main-title">{{ $cate->name }}</h2>
+    <section class="method wrapper column" aria-labelledby="diet-method-title">
+        <h2 class="main-title" id="diet-method-title">{{ $cate->name }}</h2>
         
         <div class="method-intro">
             <div class="method-intro-main">
                 <div class="title-sub">{!! $cate->desc !!}</div>
                 <div class="comparison">
                     <div class="comparison-block">
-                        <p class="comparison-title">優點</p>
+                        <h3 class="comparison-title">優點</h3>
                         @if($cate->advantage)
-                        <div class="comparison-list">
+                        <ul class="comparison-list">
                             @foreach(explode(PHP_EOL,$cate->advantage) as $k=>$v)
-                            <p class="comparison-item">{{ $v }}</p>
+                            <li class="comparison-item">{{ $v }}</li>
                             @endforeach
-                        </div>
+                        </ul>
                         @endif
                     </div>
                     <div class="comparison-block">
-                        <p class="comparison-title">缺點</p>
+                        <h3 class="comparison-title">缺點</h3>
                         @if($cate->shortcoming)
-                            <div class="comparison-list">
+                            <ul class="comparison-list">
                                 @foreach(explode(PHP_EOL,$cate->shortcoming) as $k=>$v)
-                                    <p class="comparison-item">{{ $v }}</p>
+                                    <li class="comparison-item">{{ $v }}</li>
                                 @endforeach
-                            </div>
+                            </ul>
                         @endif
                     </div>
                 </div>
 
                 @if($cate->options)
-                <div class="suitability">
+                <dl class="suitability">
                     @foreach($cate->options as $v)
-                    <span class="suitability-title">{{ $v['title'] }}</span>
-                    <span class="suitability-item">{{ $v['content'] }}</span>
+                    <dt class="suitability-title">{{ $v['title'] }}</dt>
+                    <dd class="suitability-item">{{ $v['content'] }}</dd>
                     @endforeach
-                </div>
+                </dl>
                 @endif
 
                 <div class="method-faq">
-                    <p class="method-faq-title">{{ $cate->name }}常見疑問</p>
+                    <h3 class="method-faq-title">{{ $cate->name }}常見疑問</h3>
                     @foreach($cate->faqs as $key=>$faq)
                         @if($key<3)
-                        <div class="faq-item">
-                            <div class="faq-question">
+                        <details class="faq-item" open>
+                            <summary class="faq-question">
                                 <span class="question-text">Q：{{ $faq->questions }}</span>
                                 <i class="iconfont faq-icon">&#xeca2;</i>
-                            </div>
+                            </summary>
                             <p class="faq-answer">A：{{ $faq->answers }}</p>
-                        </div>
+                        </details>
                         @endif
                     @endforeach
 
                 </div>
             </div>
 
-            <img class="method-pic" src="{{ asset('uploads/'.$cate->image) }}" alt="">
+            <img class="method-pic" src="{{ asset('uploads/'.$cate->image) }}" alt="{{ $cate->name }}法調整BMI與體脂的示意圖">
         </div>
 
         <div class="method-articles">
-            <p class="method-articles-title">延伸閱讀：{{ $cate->name }}推薦文章</p>
-
-            <div class="articles-list">
-            @foreach($cate->article as $key=>$item)
-                @if($key<3)
-                <div class="articles-item">
-                    <a href="{{ URL::to('news/'.$item->id) }}">
-                        <img src="{{ asset('uploads/'.$item->img) }}" alt="{{ $item->title }}">
-                        <p class="articles-title">{{ $item->title }}</p>
-                    </a>
-                </div>
-                @endif
-            @endforeach
-            </div>
-
+            <h3 class="method-articles-title">延伸閱讀：{{ $cate->name }}推薦文章</h3>
+            <nav aria-label="延伸閱讀：{{ $cate->name }}推薦文章">
+                <ul class="articles-list">
+                @foreach($cate->article as $key=>$item)
+                    @if($key<3)
+                    <li class="articles-item">
+                        <a href="{{ URL::to('news/'.$item->id) }}">
+                            <img src="{{ asset('uploads/'.$item->img) }}" alt="{{ $item->title }}">
+                            <h4 class="articles-title">{{ $item->title }}</h4>
+                        </a>
+                    </li>
+                    @endif
+                @endforeach
+                </ul>
+            </nav>
         </div>
-    </div>
+    </section>
     @endforeach
 
-    <div class="compare wrapper column">
-        <h2 class="main-title">減肥方式比較</h2>
+    <section class="compare wrapper column" aria-labelledby="compare-title">
+        <h2 class="main-title" id="compare-title">減肥方式比較</h2>
         <p class="title-sub">{{ app('cache.config')->get('compare_desc') }}</p>
-        <div class="compare-wrapper">
-            <div class="compare-head">
-                <div class="compare-item">
-                    <p class="compare-item-title">減肥方式</p>
-                    <p class="compare-item-content">飲食減肥</p>
-                    <p class="compare-item-content">運動減肥</p>
-                    <p class="compare-item-content">手術減肥</p>
-                    <p class="compare-item-content">藥物減肥</p>
-                </div>
-            </div>
-            <div class="compare-body">
+        <table class="compare-wrapper">
+            <caption class="visually-hidden">四種減肥方式比較表</caption>
+            <thead class="compare-head">
+                <tr class="compare-item">
+                    <th class="compare-item-title" scope="col">減肥方式</th>
+                    <th class="compare-item-content" scope="col">飲食減肥</th>
+                    <th class="compare-item-content" scope="col">運動減肥</th>
+                    <th class="compare-item-content" scope="col">手術減肥</th>
+                    <th class="compare-item-content" scope="col">藥物減肥</th>
+                </tr>
+            </thead>
+            <tbody class="compare-body">
                 @foreach(configToArray(app('cache.config')->get('compare')) as $v)
-                    <div class="compare-item">
-                        <p class="compare-item-title">{{ $v['text'] }}</p>
-                        <p class="compare-item-content">{{ $v['diet'] }}</p>
-                        <p class="compare-item-content">{{ $v['sports'] }}</p>
-                        <p class="compare-item-content">{{ $v['operation'] }}</p>
-                        <p class="compare-item-content">{{ $v['drug'] }}</p>
-                    </div>
+                    <tr class="compare-item">
+                        <th class="compare-item-title" scope="row">{{ $v['text'] }}</th>
+                        <td class="compare-item-content">{{ $v['diet'] }}</td>
+                        <td class="compare-item-content">{{ $v['sports'] }}</td>
+                        <td class="compare-item-content">{{ $v['operation'] }}</td>
+                        <td class="compare-item-content">{{ $v['drug'] }}</td>
+                    </tr>
                 @endforeach
-            </div>
-        </div>
+            </tbody>
+        </table>
 
-    </div>
+    </section>
 
-    <div class="about wrapper column">
-        <div class="wow animate__animated animate__fadeInUp">
-            <h2 class="main-title">{!! app('cache.config')->get('home_about_title') !!}</h2>
+    <section class="about wrapper column" aria-labelledby="about-title">
+        <header class="wow animate__animated animate__fadeInUp">
+            <h2 class="main-title" id="about-title">{!! app('cache.config')->get('home_about_title') !!}</h2>
             <div class="title-sub">{!! app('cache.config')->get('home_about') !!}</div>
             <div class="xl-main">
-                <p class="xl-title">上市至今累計銷量突破</p>
+                <p class="xl-title">羅氏鮮減肥藥上市至今累計銷量突破</p>
                 <div class="text">
                     <span class="num" id="use-num">25,000,000</span><span class="em">盒</span>
                 </div>
             </div>
-            <a class="go-btn btn-ef1" href="/xenical">查看羅氏鮮詳細介紹<i class="iconfont">&#xe684;</i></a>
-        </div>
+            <a class="go-btn btn-ef1" href="/xenical">查看羅氏鮮減肥藥詳細介紹<i class="iconfont">&#xe684;</i></a>
+        </header>
         <div class="suit-sec">
-            <div class="suit">
-                <p class="main-title wow animate__animated animate__fadeInUp">{!! app('cache.config')->get('home_about_title2') !!}</p>
+            <header class="suit">
+                <h3 class="main-title wow animate__animated animate__fadeInUp">{!! app('cache.config')->get('home_about_title2') !!}</h3>
                 <div class="title-sub wow animate__animated animate__fadeInUp">{!! app('cache.config')->get('home_about2') !!}</div>
-            </div>
-            <div class="suit-content wow animate__animated animate__fadeInUp">
+            </header>
+            <ul class="suit-content wow animate__animated animate__fadeInUp">
                 @foreach($for_people as $key=>$item)
                     @php
                         $people_key = $key+1;
@@ -1065,30 +1015,27 @@
                             $y = $people_key%2==0?'-100':'100';
                         }
                     @endphp
-                    <div class="item" data-parallax='{"y": {{ $y }}}'>
+                    <li class="item" data-parallax='{"y": {{ $y }}}'>
                         <img src="{{ asset('uploads/'.$item->img) }}" alt="{{ $item->text }}">
                         <p class="text">{{ $item->text }}</p>
-                    </div>
+                    </li>
 
                 @endforeach
-            </div>
+            </ul>
         </div>
-    </div>
-    <div class="product wrapper column">
-        <div class="buy">
-            <h2 class="main-title wow animate__animated animate__fadeInUp" id="product-title">線上訂購羅氏鮮</h2>
+    </section>
+    <section class="product wrapper column" aria-labelledby="product-title">
+        <header class="buy">
+            <h2 class="main-title wow animate__animated animate__fadeInUp" id="product-title">線上訂購減肥藥羅氏鮮，不同BMI階段都有對應的減肥方案</h2>
             <p class="title-sub wow animate__animated animate__fadeInUp">{!! app('cache.config')->get('home_product_desc') !!}</p>
-        </div>
-        <div class="goods wow animate__animated animate__fadeInUp">
+        </header>
+        <ul class="goods wow animate__animated animate__fadeInUp">
             @foreach($products as $key=>$item)
                 @if($key < 6)
-                <div class="item">
+                <li class="item">
                     <img class="goods-img" src="{{ asset('uploads/'.$item->img) }}?ver={{ config('app.asset_version') }}" alt="{{ $item->sub_name }} {{ $item->name_en }}{{ $item->name }}{{ $item->quantity }}{{ $item->id == 1 ? '盒標準裝' : '盒優惠裝' }}">
                     <div class="info">
-                        <div class="goods-title">
-                            <p><span style="letter-spacing: -1px;margin-right: 4px;">{{ $item->name_en }}</span>{{ $item->name }}</p>
-                            <p>{{ $item->quantity }}{{ $item->id == 1 ? '盒標準裝' : '盒優惠裝' }}</p>
-                        </div>
+                        <h3 class="goods-title"><span>{{ $item->sub_name }}</span><span><span style="letter-spacing: -1px;margin-right: 4px;">{{ $item->name_en }}</span>{{ $item->name }}</span><span>{{ $item->quantity }}{{ $item->id == 1 ? '盒標準裝' : '盒優惠裝' }}</span></h3>
                         <p class="price-sec">
                             @php
                                 $diff = $item->market_price - $item->price;
@@ -1112,12 +1059,12 @@
                             <a class="go-info btn-ef2" href="{{ URL::to('product/'.$item->id) }}" data-observer="詳情-{{ $item->name }}">詳情</a>
                         </div>
                     </div>
-                </div>
+                </li>
                 @endif
             @endforeach
-        </div>
-    </div>
-    <div class="news">
+        </ul>
+    </section>
+    <section class="news">
         <h2 class="main-title wow animate__animated animate__fadeInUp">最新減肥知識分享</h2>
         <div class="news-main">
             <div class="image-wrap wow animate__animated animate__fadeInUp">
@@ -1125,23 +1072,23 @@
             </div>
             <div class="news-wrap">
                 @foreach($news as $item)
-                    <div class="item wow animate__animated animate__fadeInUp">
+                    <article class="item wow animate__animated animate__fadeInUp">
                         <a class="info" href="{{ URL::to('news/'.$item->id) }}">
                             <div class="newsInfoIdxBox">
                                 <p class="newsDateBox">
                                     <span class="day">{{ $item->release_at->format('d') }}</span>
                                     <span class="ym">{{ $item->release_at->format('M') }}</span>
                                 </p>
-                                <p class="news-title">{{ $item->title }}</p>
+                                <h3 class="news-title">{{ $item->title }}</h3>
                             </div>
                             <p class="sub">
                                 {{ \Illuminate\Support\Str::limit($item->brief?$item->brief:strip_tags($item->content),120) }}
                             </p>
                             <span class="go btn-ef1">閱讀全文<i class="iconfont">&#xe684;</i></span>
                         </a>
-                    </div>
+                    </article>
                 @endforeach
             </div>
         </div>
-    </div>
+    </section>
 @endsection

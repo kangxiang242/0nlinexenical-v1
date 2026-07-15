@@ -45,7 +45,7 @@
                 {!! $news->content !!}
             @endif
         </div>
-        <div class="relatednav">
+        <nav class="relatednav">
             @if($prev)
             <a class="relatednav-prev" href="{{ URL::to('news/'.$prev->id) }}">
                 <span class="relatednav-arrow"></span>
@@ -59,7 +59,7 @@
                 <span class="relatednav-title  h4 h4-mb fw-bolder">{{ $next->title }}</span>
             </a>
             @endif
-        </div>
+        </nav>
     </div>
     
 @endsection

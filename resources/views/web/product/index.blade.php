@@ -42,21 +42,6 @@
             });
         });
     </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            if (window.innerWidth > 1024) {
-            document.querySelectorAll('.img-wrap').forEach(function (el, index) {
-                const direction = index % 2 === 0 ? '-' : '';
-                el.setAttribute('data-parallax', `{"y": ${direction}100, "duration": 100}`);
-            });
-
-            document.querySelectorAll('.info').forEach(function (el, index) {
-                const direction = index % 2 === 0 ? '' : '-';
-                el.setAttribute('data-parallax', `{"y": ${direction}100}`);
-            });
-            }
-        });
-    </script>
 @stop
 
 @section('content')
@@ -67,15 +52,16 @@
         <div class="title-sub">{!! str_replace(PHP_EOL,'<br>',app('cache.config')->get('page_product_desc')) !!}</div>
     </div>
     @stop
-    <div class="product-container wrapper product-main">
+    <ul class="product-container wrapper product-main">
         @foreach($products as $key=>$goods)
-            <div class="goods wow animate__animated animate__fadeInUp {{ $key%2==0?"even":"odd" }}">
-                <img class="img-wrap" src="{{ asset('uploads/'.$goods->img) }}?ver={{ config('app.asset_version') }}" alt="{{ $goods->sub_name }} {{ $goods->name_en }}{{ $goods->name }}{{ $goods->quantity }}{{ $goods->quantity == 1?"盒標準裝":"盒優惠裝" }}">
-                <div class="info">
-                    <div class="title">
-                        <span><span style="letter-spacing: -1px; margin-right: 4px;">{{ $goods->name_en }}</span>{{ $goods->name }}</span>
-                        <p>{{ $goods->quantity }}{{ $goods->quantity == 1?"盒標準裝":"盒優惠裝" }}</p>
-                    </div>
+            <li class="goods wow animate__animated animate__fadeInUp {{ $key%2==0?"even":"odd" }}">
+                <img class="img-wrap" data-parallax='{"y": {{ $key%2==0?"-":"" }}100,"duration": 100}' src="{{ asset('uploads/'.$goods->img) }}?ver={{ config('app.asset_version') }}" alt="{{ $goods->sub_name }} {{ $goods->name_en }}{{ $goods->name }}{{ $goods->quantity }}{{ $goods->quantity == 1?"盒標準裝":"盒優惠裝" }}">
+                <div class="info" data-parallax='{"y": {{ $key%2==0?"":"-" }}100}'>
+                    <h2 class="title">
+                        <span>{{ $goods->sub_name }}</span>
+                        <span><span style="letter-spacing: -1px;margin-right: 6px;">{{ $goods->name_en }}</span>{{ $goods->name }}</span>
+                        <span>{{ $goods->quantity }}{{ $goods->quantity == 1?"盒標準裝":"盒優惠裝" }}</span>
+                    </h2>
 
                     @if($goods->label)
                         <p class="tags">
@@ -86,12 +72,12 @@
                     @endif
 
                     @if($goods->attr)
-                        <div class="attr">
+                        <dl class="attr">
                             @foreach($goods->attr as $attr)
-                                <span class="attr-name">{{ $attr->name }}：</span>
-                                <span class="attr-value">{{ $attr->value }}</span>
+                                <dt class="attr-name">{{ $attr->name }}：</dt>
+                                <dd class="attr-value">{{ $attr->value }}</dd>
                             @endforeach
-                        </div>
+                        </dl>
                     @endif
                     <p class="price-sec">
                         <span class="price"><span class="twd">NT$</span>{{ number_format(round($goods->price)) }}</span>
@@ -118,14 +104,17 @@
                     </div>
                     
                 </div>
-            </div>
+            </li>
         @endforeach
-    </div>
-    <div class="bmi wrapper column">
-        <p class="main-title wow animate__animated animate__fadeInUp">{{ app('cache.config')->get('page_product_bmi_title') }}</p>
-        <p class="title-sub  wow animate__animated animate__fadeInUp">{!! str_replace(PHP_EOL,'<br>',app('cache.config')->get('page_product_bmi_desc')) !!}</p>
+    </ul>
+    <section class="bmi wrapper column">
+        <h2 class="title wow animate__animated animate__fadeInUp">{{ app('cache.config')->get('page_product_bmi_title') }}</h2>
+        <p class="title-sub  wow animate__animated animate__fadeInUp">
+            {!! str_replace(PHP_EOL,'<br>',app('cache.config')->get('page_product_bmi_desc')) !!}
+        </p>
         <a class="go-btn btn-ef1" href="{{ URL::to('bmi') }}" data-observer="測試你的數據按鈕">測一測你的BMI<i class="iconfont">&#xe684;</i></a>
-    </div>
+
+    </section>
 @endsection
 
 @section('breadcrumb')

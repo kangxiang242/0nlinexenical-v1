@@ -243,7 +243,7 @@ function orderCheck(){
 }
 
 function messageStore(){
-    var name = $("input[name='name").val();
+    var name = $("input[name='name']").val();
     var phone = $("input[name='phone']").val();
     var email = $("input[name='email']").val();
     var content = $("textarea[name='content']").val();
@@ -292,7 +292,7 @@ function messageStore(){
             if (data.code == 200){
 
                 promptSuccess(data.title,data.message);
-                $("input[name='name").val('');
+                $("input[name='name']").val('');
                 $("input[name='phone']").val('');
                 $("input[name='email']").val('');
                 $("textarea[name='content']").val('');
@@ -533,4 +533,3 @@ function submit(elem,options={}){
     return false;
 
 }
-

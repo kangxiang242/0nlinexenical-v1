@@ -67,11 +67,11 @@
 
     <img class="cover" src="{{ asset_upload($goods->img) }}" alt="{{ $goods->sub_name }} {{ $goods->name }} {{ $goods->quantity }}{{ $goods->quantity == 1?"盒標準裝":"盒優惠裝" }}">
     
-    <div class="card">
-        <div class="name">
-            <p><span style="letter-spacing: -1px;margin-right: 6px;">{{ $goods->name_en }}</span>{{ $goods->name }}</p>
-            <p>{{ $goods->quantity }}{{ $goods->quantity == 1?"盒標準裝":"盒優惠裝" }}</p>
-        </div>
+    <header class="card">
+        <h1 class="name">
+            <span>{{ $goods->sub_name }}</span>
+            <span><span style="letter-spacing: -1px;margin-right: 6px;">{{ $goods->name_en }}</span>{{ $goods->name }} {{ $goods->quantity }}{{ $goods->quantity == 1?"盒標準裝":"盒優惠裝" }}</span>
+        </h1>
         <div class="buy-sec">
             <p class="price-sec">
                 @php
@@ -93,8 +93,9 @@
             </p>
             <a class="checkout-btn go-btn" href="{{ URL::to('checkout/'.$goods->id) }}" data-observer="立即訂購">立即訂購<i class="iconfont">&#xe684;</i></a>
         </div>
-    </div>
-    <div class="sales-sec">
+    </header>
+    <section class="sales-sec">
+        <h2 class="visually-hidden">羅氏鮮減肥藥近期熱銷與購買保證</h2>
         <div class="sales"> 
             <p class="sales-week">近七天已售<span id="totalsale"></span>盒</p>
             <div class="order-views">
@@ -104,65 +105,66 @@
                 </div>
             </div>
         </div>
-        <div class="add">
-            <div class="additem">
+        <h3 class="visually-hidden">購買羅氏鮮減肥藥的五大保障</h3>
+        <ul class="add">
+            <li class="additem">
                 <i class="iconfont addicon">&#xe6c0;</i>
                 <p>現在下單，預計 <span class="addnum">{{ date('n月d日',strtotime('+2 day')) }}～{{ date('n月d日',strtotime('+3 day')) }}</span> 到達指定地址</p>
-            </div>
-            <div class="additem">
+            </li>
+            <li class="additem">
                 <i class="iconfont addicon">&#xe7d0;</i>
                 <p id="freight-text">購買商品套裝能夠享受 <span class="addnum">全台免費配送</span> 服務</p>
-            </div>
-            <div class="additem"> 
+            </li>
+            <li class="additem"> 
                 <i class="iconfont addicon">&#xe6f5;</i>
                 <p>商品鑑賞期 <span class="addnum">7天</span> 內未拆封可免費退換</p>
-            </div>
-            <div class="additem"> 
+            </li>
+            <li class="additem"> 
                 <i class="iconfont addicon">&#x100d2;</i>
                 <p>歐洲原廠生產 <span class="addnum">官方正品</span> 保證</p>
-            </div>
-            <div class="additem">
+            </li>
+            <li class="additem">
                 <i class="iconfont addicon">&#xe6f8;</i>
                 <p>頂級網站SSL憑證安全等級 <span class="addnum">保護顧客個資</span> 絕不洩漏</p>
-            </div>
-        </div>
-    </div>
-    <div class="sku-box">
-        <p class="sec-title">更多優惠套裝：</p>
-        <div class="sku">
+            </li>
+        </ul>
+    </section>
+    <section class="sku-box">
+        <h2 class="sec-title">更多羅氏鮮減肥藥優惠套裝：</h2>
+        <ul class="sku">
             @foreach($skus as $item)
-                <div class="sku-item">
+                <li class="sku-item">
                     <a href="{{ URL::to('product/'.$item->id) }}" class="a-item">
                         <p>{{ $item->quantity }}{{ $item->quantity == 1?"盒標準裝":"盒優惠裝" }}：<span class="price"><span class="twd">NT$</span>{{ number_format(round($item->price)) }}</span></p>
                     </a>
-                </div>
+                </li>
             @endforeach
-        </div>
-    </div>
+        </ul>
+    </section>
     
     
-    <div class="spec">
-        <p class="sec-title">詳細訊息與使用說明：</p>
-        <div class="spec-item">
+    <section class="spec">
+        <h2 class="sec-title">羅氏鮮減肥藥詳細訊息與使用說明：</h2>
+        <dl class="spec-item">
             @foreach($product_details as $item)
-            <span class="head">{{ $item['title'] }}</span>
-            <span class="desc">{!! str_replace(PHP_EOL,'<br>',$item['desc']) !!}</span>
+            <dt class="head">{{ $item['title'] }}</dt>
+            <dd class="desc">{!! str_replace(PHP_EOL,'<br>',$item['desc']) !!}</dd>
             @endforeach
 
-        </div>
-    </div>
-    <div class="other-box">
-        <p class="sec-title">付款方式與配送說明：</p>
+        </dl>
+    </section>
+    <section class="other-box">
+        <h2 class="sec-title">羅氏鮮減肥藥官網付款方式與配送說明：</h2>
         <div class="sub">
             {!! app('cache.config')->get('pay_instructions') !!}
         </div>
-    </div>
-    <div class="other-box">
-        <p class="sec-title">售後服務：</p>
+    </section>
+    <section class="other-box">
+        <h2 class="sec-title">羅氏鮮減肥藥官網售後服務：</h2>
         <div class="sub">
             {!! app('cache.config')->get('after_sale_instructions') !!}
         </div>
-    </div>
+    </section>
     
     
 @endsection

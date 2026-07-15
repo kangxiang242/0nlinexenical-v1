@@ -121,7 +121,7 @@ class OrderController extends BaseController
 
             $order = $this->orderRepository->store($request->all(),$products);
 
-            session()->flash('flash',json_encode(['type'=>'tips','msg'=>'訂單提交成功','sub_msg'=>'我們將會儘快為您安排發貨','code'=>200,'form_data'=>request()->except('_token','_method')],JSON_UNESCAPED_UNICODE));
+            session()->flash('flash',json_encode(['type'=>'tips','msg'=>'訂單提交成功','sub_msg'=>'我們將會儘快為您安排發貨','code'=>200],JSON_UNESCAPED_UNICODE));
 
             return JsonResponse::make()->title('訂單提交成功')->message("我們將會儘快為您安排發貨")->flash()->redirect(url('check/'.$order->no))->send();
         }catch (MsgException $exception){

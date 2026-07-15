@@ -45,7 +45,7 @@
     
     <div class="news-wrap">
         @foreach($news as $item)
-            <div class="item">
+            <article class="item">
                 <a class="info" href="{{ URL::to('news/'.$item->id) }}">
                     <div class="Img"><img src="{{ asset('uploads/'.$item->img) }}" alt="{{ $item->title }}"></div>
                     <div class="Txt">
@@ -56,11 +56,13 @@
                             </p>
                             <h2 class="title">{{ $item->title }}</h2>
                         </div>
-                        <p class="sub">{{ \Illuminate\Support\Str::limit($item->brief?$item->brief:strip_tags($item->content),680) }}</p>
+                        <p class="sub">
+                            {{ \Illuminate\Support\Str::limit($item->brief?$item->brief:strip_tags($item->content),680) }}
+                        </p>
                         <span class="go">閱讀全文<i class="iconfont">&#xe684;</i></span>
                     </div>
                 </a>
-            </div>
+            </article>
         @endforeach
         {{ $news->links() }}
     </div>

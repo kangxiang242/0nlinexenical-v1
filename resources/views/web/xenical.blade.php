@@ -258,94 +258,27 @@
         });
 
     </script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            function debounce(func, wait) {
-                let timeout;
-                return function() {
-                    const context = this;
-                    const args = arguments;
-                    clearTimeout(timeout);
-                    timeout = setTimeout(() => func.apply(context, args), wait);
-                };
-            }
-
-            const faqItems = document.querySelectorAll('.faq-item');
-
-            function calculateHeights() {
-                faqItems.forEach(item => {
-                    const question = item.querySelector('.faq-question');
-                    const answer = item.querySelector('.faq-answer');
-
-                    const wasOpen = item.classList.contains('open');
-                    if (!wasOpen) {
-                        item.classList.add('open');
-                        item.offsetHeight;
-                    }
-
-                    const questionHeight = question.offsetHeight;
-                    const fullHeight = item.offsetHeight;
-
-                    item.style.setProperty('--collapsed-height', `${questionHeight}px`);
-                    item.style.setProperty('--expanded-height', `${fullHeight}px`);
-
-                    if (!wasOpen) {
-                        item.classList.remove('open');
-                    }
-                });
-            }
-
-            calculateHeights();
-
-            if (faqItems.length > 0) {
-                faqItems[0].classList.add('open');
-            }
-
-            faqItems.forEach(item => {
-                const question = item.querySelector('.faq-question');
-                question.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const isOpen = item.classList.contains('open');
-                    
-                    faqItems.forEach(otherItem => {
-                        if (otherItem !== item && otherItem.classList.contains('open')) {
-                            otherItem.classList.remove('open');
-                        }
-                    });
-
-                    if (isOpen) {
-                        item.classList.remove('open');
-                    } else {
-                        item.classList.add('open');
-                    }
-                });
-            });
-
-            window.addEventListener('resize', debounce(calculateHeights, 250));
-        });
-    </script>
 @stop
 
 @section('content')
-    <div class="about wrapper column">
-        <div class="wow">
-            <h1 class="main-title">{!! app('cache.config')->get('home_about_title') !!}</h1>
+    <section class="about wrapper column" aria-labelledby="about-title">
+        <header class="wow">
+            <h1 class="main-title" id="about-title">{!! app('cache.config')->get('home_about_title') !!}</h1>
             <div class="title-sub">{!! app('cache.config')->get('home_about') !!}</div>
             <div class="xl-main">
-                <p class="xl-title">上市至今累計銷量突破</p>
+                <p class="xl-title">羅氏鮮減肥藥上市至今累計銷量突破</p>
                 <div class="text">
                     <span class="num" id="use-num">25,000,000</span><span class="em">盒</span>
                 </div>
             </div>
-            <a class="go-btn btn-ef1" href="/product">線上訂購羅氏鮮<i class="iconfont">&#xe684;</i></a>
-        </div>
+            <a class="go-btn btn-ef1" href="/product">線上訂購羅氏鮮減肥藥<i class="iconfont">&#xe684;</i></a>
+        </header>
         <div class="suit-sec">
-            <div class="suit">
-                <p class="main-title wow">{!! app('cache.config')->get('home_about_title2') !!}</p>
-                <div class="title-sub wow">{!! app('cache.config')->get('home_about2') !!}</div>
-            </div>
-            <div class="suit-content wow">
+            <header class="suit">
+                <h3 class="main-title">{!! app('cache.config')->get('home_about_title2') !!}</h3>
+                <div class="title-sub">{!! app('cache.config')->get('home_about2') !!}</div>
+            </header>
+            <ul class="suit-content">
 
                 @foreach($for_people as $key=>$item)
                     @php
@@ -363,18 +296,18 @@
                             $y = $people_key%2==0?'-100':'100';
                         }
                     @endphp
-                    <div class="item" data-parallax='{"y": {{ $y }}}'>
+                    <li class="item" data-parallax='{"y": {{ $y }}}'>
                         <img src="{{ asset('uploads/'.$item->img) }}" alt="{{ $item->text }}">
                         <p class="text">{{ $item->text }}</p>
-                    </div>
+                    </li>
 
                 @endforeach
-            </div>
-            <a class="go-btn btn-ef1" href="/bmi">測一測你的BMI<i class="iconfont">&#xe684;</i></a>
+            </ul>
+            <a class="go-btn btn-ef1" href="/bmi">測一測你的BMI指數<i class="iconfont">&#xe684;</i></a>
         </div>
-    </div>
-    <div class="how wrapper column">
-        <h2 class="main-title wow animate__animated animate__fadeInUp">羅氏鮮作用機轉</h2>
+    </section>
+    <section class="how wrapper column">
+        <h2 class="main-title wow animate__animated animate__fadeInUp">羅氏鮮減肥藥降低BMI作用機轉</h2>
         <div class="how-body">
             <div class="how-resolve">
                 <div class="picker appear-1">
@@ -382,7 +315,7 @@
                     <span class="min-zf left-more"></span>
                     <span class="min-zf right-more"></span>
                     <span class="min-zf right-more"></span>
-                    <img src="/static/img/how-1.jpg" alt="">
+                    <img src="/static/img/how-1.jpg" alt="羅氏鮮減肥藥降低BMI作用機轉示意圖一">
                 </div>
                 <p class="introduce appear-2">{!! app('cache.config')->get('how_to_work_1') !!}</p>
             </div>
@@ -390,67 +323,71 @@
             <div class="how-resolve restrain ">
                 <div class="picker appear-3">
                     <span class="max-zf bottom-more"></span>
-                    <img src="/static/img/how-2.jpg" alt="">
+                    <img src="/static/img/how-2.jpg" alt="羅氏鮮減肥藥降低BMI作用機轉示意圖二">
                 </div>
                 <p class="introduce appear-4">{!! app('cache.config')->get('how_to_work_2') !!}</p>
             </div>
 
         </div>
-        <a class="go-btn btn-ef1" href="/product">線上訂購羅氏鮮<i class="iconfont">&#xe684;</i></a>
-    </div>
-    <div class="reviews wrapper column">
-        <h2 class="main-title wow animate__animated animate__fadeInUp">看看她們的減肥心得</h2>
+        <a class="go-btn btn-ef1" href="/product">線上訂購羅氏鮮減肥藥<i class="iconfont">&#xe684;</i></a>
+    </section>
+    <section class="reviews wrapper column">
+        <h2 class="main-title wow animate__animated animate__fadeInUp">輕鬆降低BMI，看看她們的減肥心得</h2>
         @if($trade_show)
         <div class="reviews-body wow animate__animated animate__fadeInUp">
-            <div class="evaluate">
+            <ul class="evaluate">
                 @foreach(array_values($trade_show) as $key=>$item)
                     @if($key>5)
                         @break
                     @endif
-                    <div class="sef {{ $key==0?"sef-activate":"" }}">
+
+                    <li class="sef {{ $key==0?"sef-activate":"" }}">
                         <img src="{{ asset_upload($item['img']) }}" alt="{{ isset($item['text'])?$item['text']:'' }}">
-                    </div>
+                        <h3>{{ $item['title'] }}</h3>
+                        <p>{{ $item['desc'] }}</p>
+                    </li>
+
                 @endforeach
-            </div>
+            </ul>
             <button class="switch prev-btn" onclick="rotate(1)"><i class="iconfont">&#xe779;</i></button>
             <button class="switch next-btn" onclick="rotate(2)"><i class="iconfont">&#xe775;</i></button>
         </div>
         @endif
-        <a class="go-btn btn-ef1" href="/product">線上訂購羅氏鮮<i class="iconfont">&#xe684;</i></a>
-    </div>
-    <div class="chooseline wrapper column">
-        <div class="modal wow animate__animated animate__fadeInUp" id="ts-svg">
-            <h2 class="main-title">羅氏鮮幫助妳解決困擾</h2>
+        <a class="go-btn btn-ef1" href="/product">線上訂購羅氏鮮減肥藥<i class="iconfont">&#xe684;</i></a>
+    </section>
+    <section class="chooseline wrapper column">
+        <header class="modal wow animate__animated animate__fadeInUp" id="ts-svg">
+            <h2 class="main-title">羅氏鮮減肥藥幫助妳解決BMI困擾</h2>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 170" preserveAspectRatio="none">
                 <path d="M7.7,145.6C109,125,299.9,116.2,401,121.3c42.1,2.2,87.6,11.8,87.3,25.7">
                 </path>
             </svg>
-        </div>
+        </header>
         <div class="chooseline-body wow animate__animated animate__fadeInUp" id="loopWrap">
-            <div class="group">
+            <ul class="group">
                 @foreach($trouble as $item)
-                <div class="item">
+                <li class="item">
                     <p class="p1">{{ $item->text }}</p>
                     <p class="p2"><span class="num">{{ $item->number }}</span><span class="unit">{{ $item->unit }}</span></p>
-                </div>
+                </li>
                 @endforeach
-            </div>
+            </ul>
         </div>
-    </div>
-    <div class="fqa wrapper column">
-        <h2 class="main-title">減肥常見疑問</h2>
+    </section>
+    <section class="fqa wrapper column">
+        <h2 class="main-title">BMI管理與減肥常見疑問</h2>
         @foreach($faqs as $key=>$faq)
 
-            <div class="faq-item wow animate__animated animate__fadeInUp">
-                <div class="faq-question">
+            <details class="faq-item wow animate__animated animate__fadeInUp" open>
+                <summary class="faq-question">
                     <span class="question-text">Q：{{ $faq->questions }}</span>
                     <i class="iconfont faq-icon">&#xeca2;</i>
-                </div>
+                </summary>
                 <p class="faq-answer">A：{{ $faq->answers }}</p>
-            </div>
+            </details>
         @endforeach
 
-    </div>
+    </section>
 @endsection
 
 @section('breadcrumb')

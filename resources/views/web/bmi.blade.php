@@ -3,19 +3,7 @@
 @section('style')
     @parent
     <link rel="stylesheet" type="text/css" href="{{ asset('static/less/bmi.css') }}?ver={{ config('app.asset_version') }}"/>
-    <style>
-        blockquote{
-            border-left: 5px solid rgba(0,0,0,.05);
-            padding: 20px;
-            font-style: italic;
-            position: relative;
-            margin: 1.5em 1em 1.5em 3em;
-            font-size: 1.2em;
-            line-height: inherit;
 
-        }
-
-    </style>
 @stop
 
 @section('script')
@@ -90,94 +78,29 @@
             });
         });
     </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            function debounce(func, wait) {
-                let timeout;
-                return function() {
-                    const context = this;
-                    const args = arguments;
-                    clearTimeout(timeout);
-                    timeout = setTimeout(() => func.apply(context, args), wait);
-                };
-            }
-
-            const faqItems = document.querySelectorAll('.faq-item');
-
-            function calculateHeights() {
-                faqItems.forEach(item => {
-                    const question = item.querySelector('.faq-question');
-                    const answer = item.querySelector('.faq-answer');
-
-                    const wasOpen = item.classList.contains('open');
-                    if (!wasOpen) {
-                        item.classList.add('open');
-                        item.offsetHeight;
-                    }
-
-                    const questionHeight = question.offsetHeight;
-                    const fullHeight = item.offsetHeight;
-
-                    item.style.setProperty('--collapsed-height', `${questionHeight}px`);
-                    item.style.setProperty('--expanded-height', `${fullHeight}px`);
-
-                    if (!wasOpen) {
-                        item.classList.remove('open');
-                    }
-                });
-            }
-
-            calculateHeights();
-
-            if (faqItems.length > 0) {
-                faqItems[0].classList.add('open');
-            }
-
-            faqItems.forEach(item => {
-                const question = item.querySelector('.faq-question');
-                question.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const isOpen = item.classList.contains('open');
-                    
-                    faqItems.forEach(otherItem => {
-                        if (otherItem !== item && otherItem.classList.contains('open')) {
-                            otherItem.classList.remove('open');
-                        }
-                    });
-
-                    if (isOpen) {
-                        item.classList.remove('open');
-                    } else {
-                        item.classList.add('open');
-                    }
-                });
-            });
-
-            window.addEventListener('resize', debounce(calculateHeights, 250));
-        });
-    </script>
 @stop
 
 
 
 @section('embed-banner')
     <div class="embed-banner wrapper column">
-        <h1 class="page-title main-title">{!! app('cache.config')->get('page_evaluate_title') !!}</h1>
-        <div class="title-sub">{!! str_replace(PHP_EOL,'<br>',app('cache.config')->get('page_evaluate_desc')) !!}</div>
+        <h1 class="embed-title">{!! app('cache.config')->get('page_evaluate_title') !!}</h1>
+        <p class="embed-desc">{!! str_replace(PHP_EOL,'<br>',app('cache.config')->get('page_evaluate_desc')) !!}</p>
     </div>
 @stop
 
 @section('content')
     
-    <div class="editor">
+    <section class="editor">
         {!! app('cache.config')->get('page_evaluate_article') !!}
-    </div>
-    <div class="bmi-wrapper">
+    </section>
+    <section class="bmi-wrapper">
+        <h2 class="visually-hidden">立即計算你的BMI指數</h2>
         <div class="calculate column">
-            <div class="bmi-modal">
-                <p class="bmi-title">BMI計算器</p>
+            <header class="bmi-modal">
+                <h3 class="bmi-title">BMI計算器</h3>
                 <p class="bmi-sub">{!! app('cache.config')->get('page_bmi_subdesc') !!}</p>
-            </div>
+            </header>
             <form class="evaluate-form" onsubmit="return false;">
                 <div class="form-group">
                     <label class="form-title" for="height">你的身高：</label>
@@ -191,10 +114,10 @@
                     <button class="btn reset" type="reset">重設</button>
                     <button class="btn count btn-ef1" type="button">開始計算</button>
                 </div>
-                <p class="privacy-note">本計算器僅於瀏覽器端運算，不會傳送或儲存任何輸入資料。如需更多資訊，請參閱<a href="/privacy"">隱私權政策</a>。</p>
+                <p class="privacy-note">本BMI計算器僅於瀏覽器端運算，不會傳送或儲存任何輸入資料。如需更多資訊，請參閱<a href="/privacy" rel="nofollow">隱私權政策</a>。</p>
             </form>
             <div class="result">
-                <p class="result-title">你的BMI結果為</p>
+                <h4 class="result-title">你的BMI結果為</h4>
                 <p class="result-num" >
                     <span class="digit" id="int1" aria-hidden="true">
                         <span class="digit-inner">
@@ -216,10 +139,10 @@
             </div>
         </div>
         <div class="comparison column">
-            <div class="bmi-modal">
-                <p class="bmi-title">BMI參照表</p>
+            <header class="bmi-modal">
+                <h3 class="bmi-title">BMI參照表</h3>
                 <p class="bmi-sub">{!! app('cache.config')->get('page_bmi_subdesc2') !!}</p>
-            </div>
+            </header>
             <table class="bmi-table">
                 <thead>
                     <tr>
@@ -248,24 +171,24 @@
             </table>
             <p class="bmi-sub">資料來源：衛生福利部國民健康署</p>
         </div>
-    </div>
-    <div class="fqa wrapper column">
-        <p class="main-title">BMI常見疑問</p>
+    </section>
+    <section class="fqa wrapper column">
+        <h2 class="main-title">BMI管理與減肥常見疑問</h2>
         @foreach($faqs as $key=>$faq)
-            <div class="faq-item wow animate__animated animate__fadeInUp">
-                <div class="faq-question">
+            <details class="faq-item wow animate__animated animate__fadeInUp" open>
+                <summary class="faq-question">
                     <span class="question-text">Q：{{ $faq->questions }}</span>
                     <i class="iconfont faq-icon">&#xeca2;</i>
-                </div>
+                </summary>
                 <p class="faq-answer">A：{{ $faq->answers }}</p>
-            </div>
+            </details>
         @endforeach
 
-    </div>
-    <div class="page-news wrapper column">
-        <p class="main-title">延伸閱讀</p>
+    </section>
+    <section class="page-news wrapper column">
+        <h2 class="main-title">BMI知識延伸閱讀</h2>
         @foreach($news as $item)
-            <div class="item">
+            <article class="item">
                 <a class="info" href="{{ URL::to('news/'.$item->id) }}">
                     <div class="Img"><img src="{{ asset('uploads/'.$item->img) }}" alt="{{ $item->title }}"></div>
                     <div class="Txt">
@@ -274,7 +197,7 @@
                                 <span class="day">{{ $item->release_at->format('d') }}</span>
                                 <span class="ym">{{ $item->release_at->format('M') }}</span>
                             </p>
-                            <p class="title">{{ $item->title }}</p>
+                            <h2 class="title">{{ $item->title }}</h2>
                         </div>
                         <p class="sub">
                             {{ \Illuminate\Support\Str::limit($item->brief?$item->brief:strip_tags($item->content),680) }}
@@ -282,9 +205,9 @@
                         <span class="go">閱讀全文<i class="iconfont">&#xe684;</i></span>
                     </div>
                 </a>
-            </div>
+            </article>
         @endforeach
-    </div>
+    </section>
 @endsection
 @section('breadcrumb')
     <li class="active">{!! app('cache.config')->get('page_evaluate_title') !!}</li>

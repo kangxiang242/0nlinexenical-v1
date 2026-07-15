@@ -52,20 +52,18 @@
             const mBg = bgEl.dataset.bgM;
 
             function updateBackground() {
-            const bgUrl = window.innerWidth > 1024 ? pcBg : mBg;
-            bgEl.style.backgroundImage = `url('${bgUrl}')`;
+                const bgUrl = window.innerWidth > 1024 ? pcBg : mBg;
+                bgEl.style.backgroundImage = `url('${bgUrl}')`;
             }
 
             updateBackground();
-
-            window.addEventListener('resize', function () {
-            updateBackground();
-            });
+            window.addEventListener('resize', updateBackground);
         });
     </script>
     <script>
         bgHeight()
         function bgHeight(){
+            $('.container-bg').css('height',$(window).height()-80);
 
         }
         window.onresize = function(){
@@ -83,6 +81,10 @@
             let banner_height = $('.container-bg').height()-60;
             let opacity = 1-top/banner_height;
             $('.container-bg').css('opacity',opacity);
+
+            /* if(($(window).scrollTop() + $(window).height()).toFixed(0) == $(document).height()){
+                $('.container-bg').css('opacity',0);
+            } */
         }
     </script>
 
