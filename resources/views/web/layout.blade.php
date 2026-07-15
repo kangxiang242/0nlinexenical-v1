@@ -103,24 +103,25 @@
             request()->is('check') => 'order_check',
             default => 'cms',
         };
-        $trackingGoodsId = isset($goods) ? $goods->id : null;
-        $trackingArticleId = isset($news) ? $news->id : null;
-    @endphp
-    <script>
-        window.__TRACKING_CONFIG__ = @json([
-            'endpoint' => '/observer/store',
-            'webHost' => request()->getHost(),
-            'enabled' => true,
-            'device' => 'web',
-            'assetVersion' => config('app.asset_version'),
-        ]);
-        window.__TRACKING_PAGE__ = @json([
-            'page_type' => $trackingPageType,
-            'goods_id' => $trackingGoodsId,
-            'article_id' => $trackingArticleId,
-            'calc_type' => in_array($trackingPageType, ['bmi', 'bmr', 'body_fat'], true) ? $trackingPageType : null,
-        ]);
-    </script>
+$trackingGoodsId = (isset($goods) && is_object($goods) && property_exists($goods, 'id')) ? $goods->id : null;
+		        $trackingArticleId = (isset($news) && is_object($news) && property_exists($news, 'id')) ? $news->id : null;
+	        $trackingCalcType = in_array($trackingPageType, ['bmi', 'bmr', 'body_fat'], true) ? $trackingPageType : null;
+	    @endphp
+<script>
+	        window.__TRACKING_CONFIG__ = {
+	            endpoint: '/observer/store',
+	            webHost: location.hostname,
+	            enabled: true,
+	            device: 'web',
+	            assetVersion: @json(config('app.asset_version'))
+	        };
+	        window.__TRACKING_PAGE__ = {
+	            page_type: @json($trackingPageType),
+	            goods_id: @json($trackingGoodsId),
+	            article_id: @json($trackingArticleId),
+	            calc_type: @json($trackingCalcType)
+	        };
+	    </script>
     <script src="{{ asset('static/js/jquery.min.js') }}?ver={{ config('app.asset_version') }}"></script>
     <script src="{{ asset('static/js/tracker.js') }}?ver={{ config('app.asset_version') }}"></script>
     <script src="{{ asset('static/js/observer.js') }}?ver={{ config('app.asset_version') }}"></script>
