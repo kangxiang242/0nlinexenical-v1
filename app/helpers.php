@@ -127,3 +127,6 @@ function is_googlebot(){
 function is_mobile(){
     return \App\Handlers\DeviceTypeHandlers::isMobile();
 }
+
+// Alias for backward compatibility with old Rizhou namespace
+class_alias(\App\Services\StoreSynchronizing::class, 'Rizhou\Control\Supply\StoreSynchronizing');

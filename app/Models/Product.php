@@ -2,24 +2,18 @@
 
 namespace App\Models;
 
-
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-
-    protected $sortable = [
-        // 设置排序字段名称
-        'order_column_name' => 'sort',
-        // 是否在创建时自动排序，此参数建议设置为true
-        'sort_when_creating' => true,
-    ];
-
-
     protected $fillable = [
         'category_id','name','img','m_img','subtitle','price','market_price','status','is_stock','sort','tags','quantity','label','describe'
     ];
 
+    public function attr()
+    {
+        return $this->hasMany(ProductAttr::class, 'product_id');
+    }
 
     public function category()
     {
@@ -30,6 +24,7 @@ class Product extends Model
     {
         $img = $this->img;
         if (empty($img)) return null;
-        return url("storage/" . ltrim($img, "/"));
+        return url('storage/' . ltrim($img, '/'));
     }
 }
+

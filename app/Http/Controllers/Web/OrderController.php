@@ -123,7 +123,7 @@ class OrderController extends BaseController
 
             session()->flash('flash',json_encode(['type'=>'tips','msg'=>'訂單提交成功','sub_msg'=>'我們將會儘快為您安排發貨','code'=>200],JSON_UNESCAPED_UNICODE));
 
-            return JsonResponse::make()->title('訂單提交成功')->message("我們將會儘快為您安排發貨")->flash()->redirect(url('check/'.$order->no))->send();
+            return response()->json(["code"=>200,"msg"=>"訂單提交成功","data"=>["id"=>$order->no],"redirect"=>url("check/" . $order->no)]);
         }catch (MsgException $exception){
             return response()->json(['code'=>400,'msg'=>$exception->getMessage()],400);
         }catch (QueryException $exception){
