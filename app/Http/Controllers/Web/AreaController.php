@@ -129,6 +129,6 @@ class AreaController extends Controller
             ];
         }
 
-        return view("web.widgets.shopping-store-item", compact("data"))->render();
+        return view("web.widgets.shopping-store-item", ["data" => $data, "city_name" => $cityName, "county_name" => $countyName])->render();
     }
 }

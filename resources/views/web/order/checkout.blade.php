@@ -217,6 +217,8 @@
                                 </div>
 
                                 <div class="form-store" id="form-store-row">
+                                        <div class="store-shop" id="show-store-shop">
+                                        </div>
 
                                 </div>
                             </div>
