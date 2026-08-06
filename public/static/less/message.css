@@ -1,0 +1,118 @@
+.container-bg {
+  background: #fff url(/static/img/cb_tea_top.png) no-repeat fixed;
+  background-size: cover;
+  position: relative;
+}
+.container-bg .bg-text {
+  color: #fff;
+  font-size: 50px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+.page-main {
+  text-align: center;
+  transform: translateY(-80px);
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition-duration: 0.3s;
+}
+.page-main .page-title {
+  font-weight: 500;
+  color: #fff;
+  font-size: 32px;
+}
+.message-container .side {
+  width: 1140px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+}
+.message-container .side .left-side {
+  width: 520px;
+}
+.message-container .side .right-side {
+  width: 520px;
+}
+.message-container .side .head {
+  border-bottom: 1px solid #D8D8D8;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
+.message-container .side .head .title {
+  font-size: 24px;
+}
+.message-container .side .head .desc {
+  font-size: 14px;
+  margin-top: 20px;
+}
+.message-container .side .body .fqa {
+  font-size: 16px;
+}
+.message-container .side .body .fqa li {
+  margin-bottom: 20px;
+  height: 21px;
+  overflow: hidden;
+  -moz-transition: all 0.3s cubic-bezier(0.1, 0, 0, 1);
+  -webkit-transition: all 0.3s cubic-bezier(0.1, 0, 0, 1);
+  -o-transition: all 0.3s cubic-bezier(0.1, 0, 0, 1);
+  -ms-transition: all 0.3s cubic-bezier(0.1, 0, 0, 1);
+  transition: all 0.3s cubic-bezier(0.1, 0, 0, 1);
+}
+.message-container .side .body .fqa li .question {
+  font-size: 16px;
+}
+.message-container .side .body .fqa li .answers {
+  padding-top: 8px;
+  font-size: 14px;
+  color: #999;
+  padding-left: 30px;
+  opacity: 0;
+  -moz-transition: all 0.3s cubic-bezier(0.1, 0, 0, 1);
+  -webkit-transition: all 0.3s cubic-bezier(0.1, 0, 0, 1);
+  -o-transition: all 0.3s cubic-bezier(0.1, 0, 0, 1);
+  -ms-transition: all 0.3s cubic-bezier(0.1, 0, 0, 1);
+  transition: all 0.3s cubic-bezier(0.1, 0, 0, 1);
+}
+.message-container .side .body .fqa li.show {
+  height: calc(20px + var(--_height));
+}
+.message-container .side .body .fqa li.show .answers {
+  opacity: 1;
+}
+.message-container .side .body .form-main .form-group {
+  display: flex;
+  margin-bottom: 48px;
+}
+.message-container .side .body .form-main .form-group label {
+  font-size: 14px;
+  width: 80px;
+  padding-top: 10px;
+}
+.message-container .side .body .form-main .form-group .form-control {
+  width: 440px;
+  height: 40px;
+  border: 1px solid #979797;
+  flex-shrink: 0;
+  padding: 0 26px;
+  background-color: transparent;
+}
+.message-container .side .body .form-main .form-group .form-textarea {
+  height: 123px;
+  padding: 10px 26px;
+}
+.message-container .side .body .form-main .form-group .form-btn {
+  width: 100%;
+  height: 46px;
+  background: #C1C1C1;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+}
+.message-container .side .body .form-main .form-group .activate-btn {
+  background: #ff9b3e;
+  color: #fff;
+}

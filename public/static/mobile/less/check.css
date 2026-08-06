@@ -1,0 +1,222 @@
+.check-container {
+  width: 100%;
+  position: relative;
+  /* .foot{
+        margin-top: 4.3rem;
+        padding: 0 1.5rem;
+        font-size: 1.4rem;
+        .li{
+            margin-bottom: 2rem;
+        }
+    } */
+}
+.check-container .fixed-bg {
+  width: 100%;
+  height: 59rem;
+  background-image: url("/static/img/m_check_bg.png");
+  position: relative;
+  background-repeat: no-repeat;
+  background-size: 100%;
+  background-attachment: fixed;
+}
+.check-container .fixed-bg .mask {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.1);
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.check-container .fixed-bg .slogan {
+  color: #fff;
+  position: absolute;
+  z-index: 1;
+  top: 20rem;
+  left: 50%;
+  transform: translate(-50%, 0);
+  width: 100%;
+  text-align: center;
+  font-size: 2.4rem;
+  padding: 0 3rem;
+  font-weight: 500;
+}
+.check-container .page-main {
+  position: relative;
+  width: 100%;
+  padding-top: 1.4rem;
+}
+.check-container .page-main .page-head {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -7.8rem);
+  color: #fff;
+}
+.check-container .page-main .page-head .page-title {
+  font-size: 2.4rem;
+  font-weight: 500;
+}
+.check-container .page-main .page-head .radio {
+  width: 5.6rem;
+  height: 5.6rem;
+  border-radius: 50%;
+  border: 0.1rem solid #FFFFFF;
+  margin: 0 auto;
+}
+.check-container .page-main .describe {
+  padding: 0 2rem;
+  font-size: 1.4rem;
+  color: #000;
+  font-weight: 100;
+  margin-bottom: 3.6rem;
+  text-align: center;
+}
+.check-container .page-main .form-pack {
+  padding: 0 1.5rem;
+}
+.check-container .page-main .form-pack .form-group {
+  margin-bottom: 2rem;
+}
+.check-container .page-main .form-pack .form-group label {
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+.check-container .page-main .form-pack .form-group .form-control {
+  width: 100%;
+  height: 4rem;
+  border: 0.1rem solid #979797;
+  font-size: 16px;
+  padding: 0 1.5rem;
+}
+.check-container .page-main .form-pack .form-group .form-control.captcha_code {
+  width: 19rem;
+}
+.check-container .page-main .form-pack .form-group .form-control::placeholder {
+  color: #acacac;
+}
+.check-container .page-main .form-pack .form-group .inline {
+  display: flex;
+  justify-content: space-between;
+}
+.check-container .page-main .form-pack .form-group .code {
+  height: 4rem;
+}
+.check-container .page-main .form-pack .form-group .code img {
+  height: 100%;
+}
+.check-container .page-main .form-pack .form-group .form-btn {
+  width: 100%;
+  height: 4.6rem;
+  background: #C1C1C1;
+  font-size: 1.6rem;
+  color: #fff;
+  outline: none;
+  border: none;
+  margin-top: 1rem;
+}
+.check-container .page-main .form-pack .form-group .form-btn.activate-btn {
+  background: #ff9b3e;
+}
+.check-container .order-help {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(18px, 2vw, 28px);
+  margin-top: clamp(36px, 5vw, 68px);
+  counter-reset: help;
+}
+.check-container .order-help .order-help-card {
+  counter-increment: help;
+  position: relative;
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 18px;
+  padding: clamp(24px, 3vw, 34px);
+  border: 1px solid #e5e7eb;
+  border-radius: 24px;
+  background: #fff;
+  align-items: center;
+}
+.check-container .order-help .order-help-card::after {
+  content: "";
+  position: absolute;
+  left: calc(clamp(24px, 3vw, 34px) + 23px);
+  top: calc(clamp(24px, 3vw, 34px) + 56px);
+  bottom: clamp(24px, 3vw, 34px);
+  width: 1px;
+  background: #ead3bd;
+}
+.check-container .order-help .order-help-icon {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: 1px solid #f1d6bd;
+  border-radius: 14px;
+  background: #fff8f1;
+}
+.check-container .order-help .order-help-icon svg {
+  width: 23px;
+  height: 23px;
+  fill: none;
+  stroke: #d97826;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.check-container .order-help .order-help-card h3 {
+  color: #111827;
+  font-size: clamp(15px, 1.45vw, 22px);
+  font-weight: 750;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+}
+.check-container .order-help .order-help-card ul {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  grid-column: 1 / -1;
+  padding-left: 21px;
+  z-index: 1;
+}
+.check-container .order-help .order-help-card li {
+  position: relative;
+  padding-left: 18px;
+  color: #4b5563;
+  font-size: clamp(13px, 1.08vw, 16px);
+  line-height: 1.6;
+}
+.check-container .order-help .order-help-card li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.82em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #b86622;
+}
+@media (max-width: 768px) {
+  .check-container .order-help {
+    grid-template-columns: 1fr;
+    padding: 0 15px 60px;
+  }
+  .check-container .order-help .order-help-card {
+    grid-template-columns: 48px 1fr;
+    gap: 14px;
+    padding: 20px 15px;
+    border-radius: 18px;
+  }
+  .check-container .order-help .order-help-card::before {
+    width: 40px;
+    height: 40px;
+    font-size: 12px;
+  }
+  .check-container .order-help .order-help-card::after {
+    left: 38px;
+    top: 72px;
+    bottom: 22px;
+  }
+}

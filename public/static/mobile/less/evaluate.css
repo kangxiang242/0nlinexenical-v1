@@ -1,0 +1,187 @@
+.evaluate-container {
+  margin-top: 4rem;
+  padding-bottom: 6rem;
+}
+.evaluate-container .evaluate-form {
+  margin-bottom: 7rem;
+  padding: 0 1.5rem;
+}
+.evaluate-container .evaluate-form .form-group {
+  margin-bottom: 2.6rem;
+}
+.evaluate-container .evaluate-form .form-group .title {
+  font-size: 1.6rem;
+  margin-bottom: 1.6rem;
+}
+.evaluate-container .evaluate-form .form-group .form-inline {
+  display: flex;
+}
+.evaluate-container .evaluate-form .form-group .form-inline .radio-inline {
+  margin-right: 2.4rem;
+}
+.evaluate-container .evaluate-form .form-group .form-inline .radio-inline input[type=radio] {
+  display: none;
+}
+.evaluate-container .evaluate-form .form-group .form-inline .radio-inline label {
+  width: 8.6rem;
+  height: 4.8rem;
+  background: #D8D8D8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.6rem;
+}
+.evaluate-container .evaluate-form .form-group .form-inline .radio-inline input[type=radio]:checked + label {
+  background: #ff9b3e;
+  color: #fff;
+}
+.evaluate-container .evaluate-form .form-group .radio-row {
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+}
+.evaluate-container .evaluate-form .form-group .radio-row label {
+  font-size: 1.4rem;
+  margin-left: 1rem;
+}
+.evaluate-container .evaluate-form .form-group .form-control {
+  width: 100%;
+  height: 4rem;
+  font-size: 16px;
+  border: 0.1rem solid #979797;
+  background-color: transparent;
+  padding: 0 2.6rem;
+}
+.evaluate-container .evaluate-form .form-group .form-control:focus {
+  border-color: #ff9b3e;
+}
+.evaluate-container .evaluate-form .count-btn a {
+  background: #ff9b3e;
+  color: #fff;
+  width: 100%;
+  height: 4rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.6rem;
+}
+.evaluate-container .ending {
+  padding: 0 1.5rem;
+}
+.evaluate-container .ending .figure {
+  width: 100%;
+  margin: 0 auto;
+  border: 0.1rem solid #ccc;
+  padding: 2rem;
+  text-align: center;
+}
+.evaluate-container .ending .figure .title {
+  font-size: 1.4rem;
+}
+.evaluate-container .ending .figure .result {
+  font-size: 7.2rem;
+}
+.evaluate-container .ending .figure .col {
+  margin-bottom: 3rem;
+}
+.evaluate-container .ending .figure .col:last-child {
+  margin-bottom: 0;
+}
+.evaluate-container .ending .propose {
+  margin-top: 2.4rem;
+}
+.evaluate-container .ending .propose .title {
+  font-size: 2.4rem;
+  margin-bottom: 2rem;
+}
+.evaluate-container .ending .propose .explain {
+  font-size: 1.4rem;
+}
+.evaluate-container .ending .wares {
+  margin-top: 3.6rem;
+  width: 100%;
+  background: #FFFFFF;
+  box-shadow: 0rem 0.4rem 1.5rem 0rem rgba(0, 0, 0, 0.1);
+  border-radius: 3rem;
+  padding: 3rem 1.5rem;
+}
+.evaluate-container .ending .wares .goods {
+  display: flex;
+}
+.evaluate-container .ending .wares .goods .img-wrap {
+  width: 14.8rem;
+  min-height: 14.8rem;
+}
+.evaluate-container .ending .wares .goods .img-wrap img {
+  width: 100%;
+}
+.evaluate-container .ending .wares .goods .info {
+  margin-left: 1.5rem;
+}
+.evaluate-container .ending .wares .goods .info .goods-title {
+  font-size: 2rem;
+}
+.evaluate-container .ending .wares .goods .info .tags {
+  margin: 1.2rem 0;
+  display: flex;
+  flex-wrap: wrap;
+}
+.evaluate-container .ending .wares .goods .info .tags span {
+  padding: 0.4rem 0.8rem;
+  font-size: 1.2rem;
+  border: 0.1rem solid #979797;
+  border-radius: 0.4rem;
+  margin-bottom: 0.4rem;
+}
+.evaluate-container .ending .wares .goods .info .attrs {
+  font-size: 1.2rem;
+  margin-bottom: 1.2rem;
+}
+.evaluate-container .ending .wares .goods .info .price {
+  margin-bottom: 2rem;
+}
+.evaluate-container .ending .wares .goods .info .price span {
+  display: block;
+}
+.evaluate-container .ending .wares .goods .info .price .now {
+  font-size: 2rem;
+}
+.evaluate-container .ending .wares .goods .info .price .discount {
+  padding: 0.4rem 0.8rem;
+  font-size: 1.2rem;
+  background: #D8D8D8;
+  border-radius: 0.4rem;
+}
+.evaluate-container .ending .wares .goods .info .go-btn {
+  width: 15.2rem;
+  height: 3.8rem;
+  border-radius: 1.9rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  background-color: #ff9b3e;
+  font-size: 1.6rem;
+}
+.evaluate-container .editor {
+  padding: 0 1.5rem;
+  font-size: 1.4rem;
+}
+.evaluate-container .editor h2 {
+  margin-bottom: 2rem;
+}
+.evaluate-container .editor h2 span {
+  font-size: 2.2rem !important;
+}
+.evaluate-container .editor p {
+  font-size: 1.6rem;
+  margin-bottom: 1.2rem;
+}
+.evaluate-container .editor ul {
+  list-style: disc;
+  margin: 0 0 1.5em 3em;
+}
+.evaluate-container .editor li {
+  list-style: disc;
+  margin-bottom: 1.8rem;
+}
