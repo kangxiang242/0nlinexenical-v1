@@ -1,37 +1,87 @@
+@import "basestyle.less";
 header{
     display: none;
 }
 footer{
     display: none;
 }
+.main-wrapper{
+    margin-top: 0;
+    @media screen and (max-width: 1024px){
+        padding-bottom: 100px;
+    }
+}
 .checkout-header{
     width: 100%;
     height: 80px;
-    background-color: #fff;
+    background-color: #FFF;
     position: sticky;
     top: 0;
     z-index: 999;
-    box-shadow: 0px 0px 1px #626262;
-
+    border-bottom: 2px solid @main-color;
+    @media screen and (max-width: 1024px){
+        height: 60px;
+    }
     .wrapper{
-        display: flex;
-        align-items: center;
-
+        justify-content: center;
         height: 100%;
+        gap: 30px;
+        @media screen and (max-width: 1024px){
+            gap: 0;
+        }
     }
     .logo{
-        position: absolute;
-        left: 20px;
-        top: 50%;
-        transform: translateY(-50%);
+        width: 80px;
+        height: 46px;
+        position: relative;
+        @media screen and (max-width: 1024px){
+            transform: scale(0.7);
+            transform-origin: left;
+        }
+        .fra{
+            position: absolute;
+            left: 50%;
+            &.fra-1{
+                width: 42px;
+                top: 50%;
+                transform: translate(-50%,-50%);
+            }
+
+            &.fra-2{
+                width: 64px;
+                transform: translateX(-50%);
+                bottom: 0;
+                transition: all 0.3s;
+            }
+
+            &.fra-3{
+                width: 80px;
+                transform: translateX(-50%);
+                bottom: 0;
+                transition: all 0.3s;
+            }
+        }      
+        &:hover{
+
+            .fra{
+                &.fra-2{
+                    opacity: .2;
+                    transition: all 0.6s;
+                }
+                &.fra-3{
+                    opacity: .2;
+                    transition: all 0.3s;
+                }
+            }
+            
+        }
     }
-    .page-title{
-        text-align: center;
+    .title{
         font-weight: 500;
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%,-50%);
+        color: #000;
+        @media screen and (max-width: 1024px){
+            font-size: 20px;
+        }
     }
 }
 
@@ -39,13 +89,13 @@ footer{
     width: 100%;
 
 }
-body{
-    background: #fff6ed;
-}
+
 
 .checkout-wrapper{
-    width: 1000px;
-    margin:  0 auto;
+    max-width: 1000px;
+    width: 100%;
+    margin: 0 auto;
+    
 }
 
 .step{
@@ -77,17 +127,37 @@ body{
 .main{
     display: flex;
     justify-content: space-between;
+    @media screen and (max-width: 1024px){
+        flex-direction: column;
+        padding: 0 20px;
+        gap: 30px;
+        align-items: center;
+    }
     .base-column{
-        width: 580px;
+        max-width: 580px;
+        width: 100%;
         background: #FFFFFF;
         padding: 40px;
+        border-radius: 30px;
+        border: 1.5px solid @main-color;
+        @media screen and (max-width: 1024px){
+            padding: 30px 20px;
+            border-radius: 20px;
+        }
         .title{
             font-size: 24px;
             margin-bottom: 40px;
+            @media screen and (max-width: 1024px){
+                font-size: 18px;
+                margin-bottom: 30px;
+            }
         }
         .form-group{
             position: relative;
             margin-bottom: 40px;
+            @media screen and (max-width: 1024px){
+                margin-bottom: 30px;
+            }
             .shut{
                 position: absolute;
                 left: 0;
@@ -108,14 +178,12 @@ body{
                 height: 30px;
                 border: none;
                 border-bottom: 1px solid #D8D8D8;
-                font-size: 16px;
-                touch-action: manipulation;
                 &.focus,&:focus{
-                    border-color: #ff9b3e;
+                    border-color: @main-color;
                     +.shut{
                         -webkit-transform: translate3d(0,6px,0) scale(.75);
                         transform: translate3d(0,6px,0) scale(.75);
-                        color: #ff9b3e;
+                        color: @main-color;
                     }
                 }
                 &.focus{
@@ -141,16 +209,23 @@ body{
             .radio-box{
                 display: flex;
                 gap: 20px;
+                @media screen and (max-width: 1024px){
+                    gap: 6px;
+                }
                 .form-radio{
+                    max-width: 200px;
                     width: 100%;
-                    
                     .radio-label{
                         display: flex;
                         align-items: center;
                         border-radius: 10px;
                         border: 1.5px solid #C4C4C4;
-                        padding: 0.6rem 1.2rem;
+                        padding: 0 0 0 12px;
                         transition: all 0.15s;
+                        height: 52px;
+                        @media screen and (max-width: 1024px){
+                            padding: 0 0 0 10px;
+                        }
                         .ana{
                             width: 2rem;
                             height: 2rem;
@@ -166,7 +241,7 @@ body{
                                 content: "";
                                 width: 1.4rem;
                                 height: 1.4rem;
-                                background-color: #ff9b3e;
+                                background-color: @main-color;
                                 border-radius: 50%;
                                 transition: -webkit-transform .28s ease;
                                 transition: transform .28s ease;
@@ -187,7 +262,10 @@ body{
                         .text{
                             margin-left: 10px;
                             font-size: 13px;
-                            letter-spacing: 0;
+                            @media screen and (max-width: 1024px){
+                                font-size: 12px;
+                                margin-left: 8px;
+                            }
                             i{
                                 font-style: normal;
                             }
@@ -198,10 +276,10 @@ body{
                         &:checked{
                             
                             +.radio-label{
-                                border: 1.5px solid #ff9b3e;
-                                background-color: #fffcfa;
+                                border: 1.5px solid @main-color;
+                                background-color: #fff;
                                 .ana{
-                                    border-color: #ff9b3e;
+                                    border-color: @main-color;
                                     
                                     &:after{
                                         -webkit-transform: scale(1);
@@ -217,18 +295,22 @@ body{
             .form-select{
                 display: flex;
                 justify-content: space-between;
+                gap: 20px;
+                @media screen and (max-width: 1024px){
+                    gap: 4px;
+                }
                 .select-box{
                     position: relative;
+                    width: 100%;
                     select{
-                        width: 153px;
-                        height: 30px;
+                        width: 100%;
+                        height: 36px;
                         background: #FFFFFF;
                         border-radius: 6px;
                         border: 1px solid #C4C4C4;
-                        font-size: 16px;
+                        font-size: 14px;
                         padding-left: 10px;
                         outline: none;
-                        touch-action: manipulation;
                     }
                 }
             }
@@ -249,8 +331,8 @@ body{
                     }
                     input:checked + .store-content{
                         background-color: #fffcfa;
-                        border: 1.5px solid #ff9b3e;
-                        color: #ff9b3e;
+                        border: 1.5px solid @main-color;
+                        color: @main-color;
                     }
                     .store-input{
                         display: none;
@@ -319,10 +401,8 @@ body{
                 border: 1px solid #C4C4C4;
                 padding: 6px 10px;
                 font-family: "YaHei Consolas Hybrid";
-                font-size: 16px;
-                touch-action: manipulation;
                 &:focus{
-                    border-color: #ff9b3e;
+                    border-color: @main-color;
                 }
             }
 
@@ -330,12 +410,18 @@ body{
         }
     }
     .count-column{
-        width: 380px;
+        max-width: 380px;
+        width: 100%;
+        @media screen and (max-width: 1024px){
+            max-width: 580px;
+        }
         .card{
             width: 100%;
-            padding: 30px 20px;
+            padding: 30px;
             background: #FFFFFF;
+            border-radius: 30px;
             position: relative;
+            border: 1.5px solid @main-color;
         }
         .load{
             position: absolute;
@@ -389,7 +475,7 @@ body{
             }
         }
         .delivery{
-            color: #ff9b3e;
+            color: @main-color;
             font-size: 14px;
             padding: 20px 0;
             border-top: 1px solid #D8D8D8;
@@ -419,7 +505,7 @@ body{
                     }
                     dd{
                         font-size: 14px;
-                        color: #ff9b3e;
+                        color: @main-color;
                     }
                 }
             }
@@ -446,11 +532,11 @@ body{
         .submit-btn{
             width: 100%;
             height: 48px;
-            background: #ff9b3e;
+            background: @main-color;
             border-radius: 6px;
             border: none;
             outline: none;
-            color: #fff;
+            color: #000;
             margin-top: 30px;
             font-family: "Microsoft YaHei";
             font-size: 16px;
@@ -502,14 +588,14 @@ body{
                     .sales-ico{
                         width: 48px;
                         height: 48px;
-                        border: 1px solid #ff9b3e;
+                        border: 1px solid @main-color;
                         border-radius: 50%;
                         display: flex;
                         align-items: center;
                         justify-content: center;
                         i{
                             font-size: 26px;
-                            color: #ff9b3e;
+                            color: @main-color;
                         }
                     }
                     .sales-title{

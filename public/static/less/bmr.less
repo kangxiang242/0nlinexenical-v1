@@ -1,4 +1,4 @@
-@main-color: #ff9b3f;
+@import "basestyle.less";
 
 .banner-section{
     margin-bottom: 40px;
@@ -32,10 +32,12 @@
     }
     .bmr-title, .tdee-title{
         font-weight: 500;
-        font-size: 24px;
+        font-size: @h3size;
         margin-bottom: 4px;
         text-align: center;
-
+        @media screen and (max-width: 1024px){
+            font-size: @h3msize;
+        }
     }
     .bmr-sub, .tdee-sub{
         font-size: 14px;
@@ -78,7 +80,7 @@
                     background: #FFF;
                     padding: 4px;
                     width: 100%;
-                    height: 44px;
+                    height: @gender-toggle-height;
                     overflow: hidden;
                   
                     .active-bg {
@@ -206,17 +208,15 @@
             }
         }
     }
-    @digit-size: 44px;
-    @digit-width: 1ch;
-    @digit-color: #333;
-    @spin-duration: 1s;
-    @spin-delay-gap: 0.3s;
-    @digit-list-length: 11;
+    
     .result{
         .result-title{
-            font-size: 18px;
+            font-size: @h4size;
             text-align: center;
             margin-bottom: 4px;
+            @media screen and (max-width: 1024px){
+                font-size: @h4msize;
+            }
         }
         .result-num {
             font-size: @digit-size;
@@ -225,6 +225,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            background-color: #e6f8f7;
             padding: 0 20px;
             width: fit-content;
             margin: auto;
@@ -275,7 +276,7 @@
             gap: 10px;
         }
         .tdee-item{
-            border: 1.5px solid @main-color;
+            border: 1.5px solid #82d8d0;
             padding: 20px;
             border-radius: 20px;
             @media screen and (max-width: 768px){
@@ -324,7 +325,7 @@
                             opacity: 1;
                         }
                         .tdee-num{
-                            background-color: @main-color;
+                            background-color: #82d8d0;
                             padding: 2px 6px;
                             border-radius: 4px;
                         }
@@ -373,7 +374,95 @@
         }
     }
 }
-
+.fqa{
+    margin-bottom: 200px;
+}
+.faq-item {
+    width: 100%;
+    margin-bottom: 10px;
+    border-radius: 12px;
+    border: 1.5px solid @main-color;
+    overflow: hidden;
+    height: var(--collapsed-height, 52px);
+    transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    max-width: 800px;
+    @media screen and (max-width: 1024px){
+        height: var(--collapsed-height, 48px);
+    }
+    &[open] {
+        height: var(--expanded-height, auto);
+        .faq-question {
+            background-color: #e5fffd;
+            color: @main-color;
+        }
+        
+        .faq-icon {
+            transform: rotate(180deg);
+        }
+        
+    }
+    &.open{
+        height: var(--expanded-height, auto);
+        .faq-question {
+            background-color: #e5fffd;
+            color: @main-color;
+        }
+        
+        .faq-icon {
+            transform: rotate(180deg);
+        }
+    }
+    
+    .faq-question {
+        height: 52px;
+        list-style: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 20px;
+        background-color: #e5fffd;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        -webkit-tap-highlight-color: transparent;
+        @media screen and (max-width: 1024px){
+            padding: 0 14px;
+            height: 48px;
+        }
+        &::-webkit-details-marker {
+            display: none;
+        }
+        .question-text {
+            font-size: 16px;
+            font-weight: 500;
+            color: @text-black;
+            @media screen and (max-width: 1024px){
+                font-size: 15px;
+            }
+        }
+        
+        .faq-icon {
+            transition: transform 0.3s ease;
+            color: @main-color;
+            font-weight: 700;
+            @media screen and (max-width: 1024px){
+                font-size: 14px;
+            }
+        }
+    }
+    
+    .faq-answer {
+        padding: 15px 50px;
+        font-size: 14px;
+        letter-spacing: 0;
+        line-height: 1.6;
+        background-color: #FFF;
+        text-align: justify;
+        @media screen and (max-width: 1024px){
+            padding: 14px 20px;
+            font-size: 13px;
+        }
+    }
+}
 
 .page-news{
     margin-bottom: 100px;
@@ -434,7 +523,7 @@
                         display: flex;
                         align-items: center;
                         flex-direction: column;
-                        color: #000;
+                        color: @text-black;
                         line-height: 1;
                         letter-spacing: 0;
                         font-weight: 700;
@@ -453,7 +542,7 @@
                     .title{
                         font-size: 20px;
                         font-weight: 700;
-                        color: #000;
+                        color: @text-black;
                         @media screen and (max-width: 1024px){
                             font-size: 15px;
                         }

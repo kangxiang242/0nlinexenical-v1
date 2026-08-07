@@ -39,6 +39,12 @@
   margin-bottom: 4px;
   text-align: center;
 }
+@media screen and (max-width: 1024px) {
+  .bmr-wrapper .bmr-title,
+  .bmr-wrapper .tdee-title {
+    font-size: 18px;
+  }
+}
 .bmr-wrapper .bmr-sub,
 .bmr-wrapper .tdee-sub {
   font-size: 14px;
@@ -56,7 +62,7 @@
 }
 .bmr-wrapper .calculate {
   flex-shrink: 0;
-  border: 1.5px dashed #ff9b3f;
+  border: 1.5px dashed #81D8D0;
   border-radius: 20px;
   width: 100%;
   display: flex;
@@ -96,7 +102,7 @@
   left: 4px;
   width: calc(50% - 4px);
   height: calc(100% - 8px);
-  background-color: #ff9b3f;
+  background-color: #81D8D0;
   border-radius: 999px;
   transition: transform 0.3s ease;
   z-index: 0;
@@ -147,7 +153,7 @@
   border-radius: 5px;
 }
 .bmr-wrapper .calculate .evaluate-form .form-group .form-inline .radio-inline input[type=radio]:checked + label {
-  background: #ff9b3f;
+  background: #81D8D0;
   color: #fff;
 }
 .bmr-wrapper .calculate .evaluate-form .form-group .radio-row {
@@ -167,7 +173,7 @@
   font-size: 14px;
 }
 .bmr-wrapper .calculate .evaluate-form .form-group .form-control:focus {
-  border-color: #ff9b3f;
+  border-color: #81D8D0;
 }
 @media screen and (max-width: 1024px) {
   .bmr-wrapper .calculate .evaluate-form .form-group .form-control {
@@ -180,16 +186,16 @@
 }
 .bmr-wrapper .calculate .evaluate-form .btns .reset {
   flex: 1;
-  border: 1.5px solid #ff9b3f;
+  border: 1.5px solid #81D8D0;
   color: #000;
   transition: all 0.3s;
 }
 .bmr-wrapper .calculate .evaluate-form .btns .reset:hover {
-  color: #ff9b3f;
+  color: #81D8D0;
 }
 .bmr-wrapper .calculate .evaluate-form .btns .count {
   flex: 2;
-  background: #ff9b3f;
+  background: #81D8D0;
   color: #fff;
 }
 .bmr-wrapper .calculate .evaluate-form .btns .btn {
@@ -209,9 +215,14 @@
   }
 }
 .bmr-wrapper .result .result-title {
-  font-size: 18px;
+  font-size: 20px;
   text-align: center;
   margin-bottom: 4px;
+}
+@media screen and (max-width: 1024px) {
+  .bmr-wrapper .result .result-title {
+    font-size: 16px;
+  }
 }
 .bmr-wrapper .result .result-num {
   font-size: 44px;
@@ -220,6 +231,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: #e6f8f7;
   padding: 0 20px;
   width: fit-content;
   margin: auto;
@@ -283,7 +295,7 @@
   }
 }
 .bmr-wrapper .tdee-list .tdee-item {
-  border: 1.5px solid #ff9b3f;
+  border: 1.5px solid #82d8d0;
   padding: 20px;
   border-radius: 20px;
 }
@@ -343,7 +355,7 @@
   opacity: 1;
 }
 .bmr-wrapper .tdee-list .tdee-item .tdee-item-wrap .tdee-item-info .tdee-result .tdee-num {
-  background-color: #ff9b3f;
+  background-color: #82d8d0;
   padding: 2px 6px;
   border-radius: 4px;
 }
@@ -354,7 +366,7 @@
   padding: 80px;
   margin: 0 auto 100px;
   background-color: #FFF;
-  border: 1.5px solid #ff9b3f;
+  border: 1.5px solid #81D8D0;
 }
 @media screen and (max-width: 1260px) {
   .editor {
@@ -393,6 +405,99 @@
     margin: 30px 0 20px;
   }
 }
+.fqa {
+  margin-bottom: 200px;
+}
+.faq-item {
+  width: 100%;
+  margin-bottom: 10px;
+  border-radius: 12px;
+  border: 1.5px solid #81D8D0;
+  overflow: hidden;
+  height: var(--collapsed-height, 52px);
+  transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  max-width: 800px;
+}
+@media screen and (max-width: 1024px) {
+  .faq-item {
+    height: var(--collapsed-height, 48px);
+  }
+}
+.faq-item[open] {
+  height: var(--expanded-height, auto);
+}
+.faq-item[open] .faq-question {
+  background-color: #e5fffd;
+  color: #81D8D0;
+}
+.faq-item[open] .faq-icon {
+  transform: rotate(180deg);
+}
+.faq-item.open {
+  height: var(--expanded-height, auto);
+}
+.faq-item.open .faq-question {
+  background-color: #e5fffd;
+  color: #81D8D0;
+}
+.faq-item.open .faq-icon {
+  transform: rotate(180deg);
+}
+.faq-item .faq-question {
+  height: 52px;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  background-color: #e5fffd;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+@media screen and (max-width: 1024px) {
+  .faq-item .faq-question {
+    padding: 0 14px;
+    height: 48px;
+  }
+}
+.faq-item .faq-question::-webkit-details-marker {
+  display: none;
+}
+.faq-item .faq-question .question-text {
+  font-size: 16px;
+  font-weight: 500;
+  color: #191919;
+}
+@media screen and (max-width: 1024px) {
+  .faq-item .faq-question .question-text {
+    font-size: 15px;
+  }
+}
+.faq-item .faq-question .faq-icon {
+  transition: transform 0.3s ease;
+  color: #81D8D0;
+  font-weight: 700;
+}
+@media screen and (max-width: 1024px) {
+  .faq-item .faq-question .faq-icon {
+    font-size: 14px;
+  }
+}
+.faq-item .faq-answer {
+  padding: 15px 50px;
+  font-size: 14px;
+  letter-spacing: 0;
+  line-height: 1.6;
+  background-color: #FFF;
+  text-align: justify;
+}
+@media screen and (max-width: 1024px) {
+  .faq-item .faq-answer {
+    padding: 14px 20px;
+    font-size: 13px;
+  }
+}
 .page-news {
   margin-bottom: 100px;
 }
@@ -400,7 +505,7 @@
   border-radius: 30px;
   overflow: hidden;
   margin-bottom: 30px;
-  border: 1.5px solid #ff9b3f;
+  border: 1.5px solid #81D8D0;
 }
 .page-news .item .info {
   display: flex;
@@ -447,7 +552,7 @@
   align-items: center;
   margin-bottom: 15px;
   padding-bottom: 15px;
-  border-bottom: 1.5px solid #ff9b3f;
+  border-bottom: 1.5px solid #81D8D0;
   -webkit-transition: all 0.5s ease-out;
   -o-transition: all 0.5s ease-out;
   transition: all 0.5s ease-out;
@@ -462,13 +567,13 @@
   display: flex;
   align-items: center;
   flex-direction: column;
-  color: #000;
+  color: #191919;
   line-height: 1;
   letter-spacing: 0;
   font-weight: 700;
   padding: 0 15px;
   margin-right: 15px;
-  border-right: 1.5px solid #ff9b3f;
+  border-right: 1.5px solid #81D8D0;
   flex-shrink: 0;
 }
 .page-news .item .info .Txt .newsInfoIdxBox .newsDateBox .day {
@@ -480,7 +585,7 @@
 .page-news .item .info .Txt .newsInfoIdxBox .title {
   font-size: 20px;
   font-weight: 700;
-  color: #000;
+  color: #191919;
 }
 @media screen and (max-width: 1024px) {
   .page-news .item .info .Txt .newsInfoIdxBox .title {
@@ -513,7 +618,7 @@
   .page-news .item .info .Txt .go {
     font-size: 14px;
     margin-top: 20px;
-    color: #ff9b3f;
+    color: #81D8D0;
   }
 }
 .page-news .item .info .Txt .go i {
@@ -565,7 +670,7 @@
   transform: scale(1.05);
 }
 .page-news .item:hover .info .Txt .go {
-  color: #ff9b3f;
+  color: #81D8D0;
 }
 .page-news .item:hover .info .Txt .go i {
   animation: goList 1s infinite;

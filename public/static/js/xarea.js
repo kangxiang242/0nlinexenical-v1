@@ -1,8 +1,4 @@
 
-function xoAreaTrack(step, status) {
-    if (window.XenicalTracker && XenicalTracker.trackAreaLoad) XenicalTracker.trackAreaLoad(step, status || 'ok');
-}
-
 
 var stores_height;
 var is_repeat = 0;
@@ -103,7 +99,7 @@ function getCity(type){
             }
 
             selectOption(result,'city');
-            removeLoadingEffect('#load-1'); xoAreaTrack('city','ok')
+            removeLoadingEffect('#load-1')
         }
     });
 }
@@ -126,7 +122,7 @@ function getCounty(type,city_name){
                 result = JSON.parse(result);
             }
             selectOption(result,'county');
-            removeLoadingEffect('#load-2'); xoAreaTrack('county','ok')
+            removeLoadingEffect('#load-2')
         }
     });
 }
@@ -147,7 +143,7 @@ function getRoad(type,city_name,county_name){
                 result = JSON.parse(result);
             }
             selectOption(result,'street');
-            removeLoadingEffect('#load-3'); xoAreaTrack('street','ok')
+            removeLoadingEffect('#load-3')
         }
     });
 }
@@ -171,7 +167,7 @@ function getShop(type,city_name,county_name,road_name){
         },
         success : function(result) {//返回数据根据结果进行相应的处理
             $('#form-store-row').html(result);
-            $('#form-store-row').show(); xoAreaTrack('shop','ok');
+            $('#form-store-row').show();
         }
     });
 }

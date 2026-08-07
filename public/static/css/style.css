@@ -9,9 +9,6 @@ body, div, ul, li, h1, h2, h3, h4, h5, h6, p, dl, dt, dd, ol, form, input, texta
         table{
             border-collapse:collapse;
         }
-        body {
-            font-family: Microsoft YaHei;
-        }
 
         ul, li {
             list-style: none;
@@ -19,7 +16,7 @@ body, div, ul, li, h1, h2, h3, h4, h5, h6, p, dl, dt, dd, ol, form, input, texta
 
         a {
             text-decoration: none;
-            color: #232323;
+            color: initial;
         }
 
         input, textarea {
@@ -30,6 +27,13 @@ body, div, ul, li, h1, h2, h3, h4, h5, h6, p, dl, dt, dd, ol, form, input, texta
         textarea {
             resize: none;
             overflow: auto;
+        }
+        button{
+            margin: 0;
+            padding: 0;
+            background: none;
+            border: none;
+            cursor: pointer;
         }
 
         .clearfix {
