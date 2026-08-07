@@ -74,7 +74,7 @@ class OrderRepository extends Repository
                 'ipcountry' => request()->header('cf-ipcountry'),
                 'user_agent'=>request()->header('user-agent'),
                 'product_price'=>$product_price,
-                'delivery_type'=>Arr::get($data,'order_type', 0)
+                'delivery_type'=>Arr::get($data,'order_type')
             ];
 
             if(Arr::get($data,'order_type') > 0){
@@ -116,7 +116,7 @@ class OrderRepository extends Repository
                 $insert_data['shop_type'] = Arr::get($shop,'shop_type',0)+1;
                 $insert_data['shop_data'] = $shop;
             }else{
-                $insert_data['address'] = Arr::get($data,'address') ?? '';
+                $insert_data['address'] = Arr::get($data,'address');
             }
 
             $freight_where = \App\Services\ConfigService::get('freight_where',0);
@@ -246,7 +246,7 @@ class OrderRepository extends Repository
         $no = date('YmdHi').rand(1000,9999);
         $order = $this->model()->where('no',$no)->first();
         if($order){
-            return $this->makeOrderNo();
+            $this->makeOrderNo();
         }
         return $no;
     }

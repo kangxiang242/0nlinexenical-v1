@@ -1,44 +1,43 @@
-@extends('web::layout.layout')
+@extends('web.layout')
 
 @section('style')
     @parent
-    <!-- <link rel="stylesheet" type="text/css" href="{{ asset('static/less/bmr.css') }}?ver={{ config('app.asset_version') }}"/> -->
-    @if(!empty($css))
-    <style type="text/css">
-        {!! $css !!}
-    </style>
-    @endif
+    <link rel="stylesheet" type="text/css" href="{{ asset('static/less/bmr.css') }}?ver={{ config('app.asset_version') }}"/>
+    <style>
+        blockquote{
+            border-left: 5px solid rgba(0,0,0,.05);
+            padding: 20px;
 
+            font-style: italic;
+
+            position: relative;
+            margin: 1.5em 1em 1.5em 3em;
+            font-size: 1.2em;
+            line-height: inherit;
+
+        }
+
+    </style>
 @stop
 
 @section('script')
+    @parent
+    <script src="{{ asset('static/js/jquery.leoTextAnimate.js') }}?ver={{ config('app.asset_version') }}"></script>
     <script>
         function animateDigit(el, num, alwaysSpin = false) {
+            const digitHeight = 44;
             const inner = el.querySelector('.digit-inner');
-            if (!inner) {
-                return;
-            }
-            const firstSpan = inner.querySelector('span');
             const targetIndex = num === '?' ? 0 : (parseInt(num, 10) + 1);
             let currentIndex = 0;
-            const currentTransform = inner.style.transform || 'translateY(0)';
-            const emMatch = currentTransform.match(/translateY\(-([\d.]+)em\)/);
-            if (emMatch) {
-                currentIndex = Math.round(parseFloat(emMatch[1]));
-            } else {
-                const pxMatch = currentTransform.match(/translateY\(-([\d.]+)px\)/);
-                if (pxMatch && firstSpan) {
-                    const digitHeight = Math.max(1, Math.round(firstSpan.offsetHeight || firstSpan.getBoundingClientRect().height));
-                    currentIndex = Math.round(parseFloat(pxMatch[1]) / digitHeight);
-                }
-            }
+            const match = inner.style.transform?.match(/-([0-9]+)px/);
+            if (match) currentIndex = Math.round(parseInt(match[1], 10) / digitHeight);
             if (!alwaysSpin && currentIndex === targetIndex) return;
             const totalIndex = targetIndex + (alwaysSpin ? 11 : 0);
             inner.style.transition = 'none';
-            inner.style.transform = 'translateY(0)';
+            inner.style.transform = `translateY(0)`;
             void inner.offsetWidth;
             inner.style.transition = 'transform 1s ease-out';
-            inner.style.transform = 'translateY(-' + totalIndex + 'em)';
+            inner.style.transform = `translateY(-${totalIndex * digitHeight}px)`;
         }
 
         function animateBMRDisplay(bmr) {
@@ -133,24 +132,95 @@
             });
         });
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function debounce(func, wait) {
+                let timeout;
+                return function() {
+                    const context = this;
+                    const args = arguments;
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func.apply(context, args), wait);
+                };
+            }
 
+            const faqItems = document.querySelectorAll('.faq-item');
+
+            function calculateHeights() {
+                faqItems.forEach(item => {
+                    const question = item.querySelector('.faq-question');
+                    const answer = item.querySelector('.faq-answer');
+
+                    const wasOpen = item.classList.contains('open');
+                    if (!wasOpen) {
+                        item.classList.add('open');
+                        item.offsetHeight;
+                    }
+
+                    const questionHeight = question.offsetHeight;
+                    const fullHeight = item.offsetHeight;
+
+                    item.style.setProperty('--collapsed-height', `${questionHeight}px`);
+                    item.style.setProperty('--expanded-height', `${fullHeight}px`);
+
+                    if (!wasOpen) {
+                        item.classList.remove('open');
+                    }
+                });
+            }
+
+            calculateHeights();
+
+            if (faqItems.length > 0) {
+                faqItems[0].classList.add('open');
+            }
+
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                question.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const isOpen = item.classList.contains('open');
+                    
+                    faqItems.forEach(otherItem => {
+                        if (otherItem !== item && otherItem.classList.contains('open')) {
+                            otherItem.classList.remove('open');
+                        }
+                    });
+
+                    if (isOpen) {
+                        item.classList.remove('open');
+                    } else {
+                        item.classList.add('open');
+                    }
+                });
+            });
+
+            window.addEventListener('resize', debounce(calculateHeights, 250));
+        });
+    </script>
+@stop
+
+
+
+@section('embed-banner')
+    <div class="embed-banner wrapper column">
+        <h1 class="page-title main-title">{!! app('cache.config')->get('page_bmr_title') !!}</h1>
+        <div class="title-sub">{!! str_replace(PHP_EOL,'<br>',app('cache.config')->get('page_bmr_desc')) !!}</div>
+    </div>
 @stop
 
 @section('content')
-<main>
-    @include('web.widgets.head-banner')
-    @include('web.widgets.breadcrumb', ['itemsHtml' => '<li class="breadcrumb__item">BMR計算</li>'])
-    {{--
-    <section class="editor">
-        {!! app('cache.config')->get('page_compute_article') !!}
-    </section>
-    --}}
-    <section class="calc-wrapper" data-track-section-view data-track-section="calc.main" data-track-section-label="BMR 計算器">
-        <h2 class="sr-only">立即計算你的BMR指數及TDEE</h2>
-        <div class="calculate">
-            <h3 class="calc-title">BMR計算</h3>
-            <p class="calc-sub">僅需輸入身高、體重、年齡及生理性別，即可快速計算出BMR指數及TDEE，並參考TDEE建議值參照表，了解自己的身體狀況。</p>
-
+    
+    <div class="editor">
+        {!! app('cache.config')->get('page_bmr_article') !!}
+    </div>
+    <div class="bmr-wrapper">
+        <h2 class="visually-hidden">立即計算你的BMR指數及TDEE</h2>
+        <div class="calculate column">
+            <div class="bmr-modal">
+                <p class="bmr-title">BMR計算器</p>
+                <p class="bmr-sub">{!! app('cache.config')->get('page_bmr_subdesc') !!}</p>
+            </div>
             <form class="evaluate-form" onsubmit="return false;">
                 <div class="form-group">
                     <label class="form-title visually-hidden" for="gender">生理性別：</label>
@@ -178,10 +248,10 @@
                     <button class="btn reset" type="reset">重設</button>
                     <button class="btn count btn-ef1" type="button">開始計算</button>
                 </div>
-                <p class="privacy-note">本BMR計算僅於瀏覽器端運算，不會傳送或儲存任何輸入資料。如需更多資訊，請參閱<a href="/privacy" rel="nofollow">隱私權政策</a>。</p>
+                <p class="privacy-note">本計算器僅於瀏覽器端運算，不會傳送或儲存任何輸入資料。如需更多資訊，請參閱<a href="/privacy"">隱私權政策</a>。</p>
             </form>
             <div class="result">
-                <h4 class="result-title">你的BMR結果為</h4>
+                <p class="result-title">你的BMR結果為</p>
                 <p class="result-num" >
                     <span class="digit" id="int1" aria-hidden="true">
                         <span class="digit-inner">
@@ -212,82 +282,114 @@
                 </p>
             </div>
         </div>
-        <div class="calc-table">
-            <h3 class="calc-title">你的每日TDEE（總熱量消耗）</h3>
-            {{--<p class="calc-sub">{!! app('cache.config')->get('page_compute_tdee_sub_gb') !!}</p>--}}
-            <ul class="tdee-list">
-                <li class="tdee-item">
-                    <figure class="tdee-item-wrap">
+        <div class="comparison column">
+            <div class="tdee-modal">
+                <p class="tdee-title">你的每日TDEE（總熱量消耗）</p>
+                <p class="tdee-sub">{!! app('cache.config')->get('page_bmr_subdesc2') !!}</p>
+            </div>
+            <div class="tdee-list">
+                <div class="tdee-item">
+                    <div class="tdee-item-wrap">
                         <img src="/static/img/lv1.webp" alt="TDEE靜態活動等級">
-                        <figcaption class="tdee-item-info">
+                        <div class="tdee-item-info">
                             <p class="tdee-item-name"><strong class="tdee-item-title">身體活動趨於靜態</strong>（幾乎沒有在運動）</p>
                             <p class="tdee-item-sub">坐式生活型態，如：靜臥、久坐、看電視</p>
                             <p class="tdee-formula">TDEE = BMR × 1.2</p>
                             <p class="tdee-result">TDEE = <strong class="tdee-num"></strong></p>
-                        </figcaption>
-                    </figure>
-                </li>
+                        </div>
+                    </div>
+                </div>
 
-                <li class="tdee-item">
-                    <figure class="tdee-item-wrap">
+                <div class="tdee-item">
+                    <div class="tdee-item-wrap">
                         <img src="/static/img/lv2.webp" alt="TDEE較低活動等級">
-                        <figcaption class="tdee-item-info">
+                        <div class="tdee-item-info">
                             <p class="tdee-item-name"><strong class="tdee-item-title">身體活動程度較低</strong>（每週有運動 1~3 天）</p>
                             <p class="tdee-item-sub">不太費力的基本活動，如：開車、烹飪、散步</p>
                             <p class="tdee-formula">TDEE = BMR × 1.375</p>
                             <p class="tdee-result">TDEE = <strong class="tdee-num"></strong></p>
-                        </figcaption>
-                    </figure>
-                </li>
+                        </div>
+                    </div>
+                </div>
 
-                <li class="tdee-item">
-                    <figure class="tdee-item-wrap">
+                <div class="tdee-item">
+                    <div class="tdee-item-wrap">
                         <img src="/static/img/lv3.webp" alt="TDEE中等活動等級">
-                        <figcaption class="tdee-item-info">
+                        <div class="tdee-item-info">
                         <p class="tdee-item-name"><strong class="tdee-item-title">身體活動程度正常</strong>（每週有運動 3~5 天）</p>
                         <p class="tdee-item-sub">呼吸及心跳些微加快的活動，如：掃地、拖地、逛街、健走</p>
                         <p class="tdee-formula">TDEE = BMR × 1.55</p>
                         <p class="tdee-result">TDEE = <strong class="tdee-num"></strong></p>
-                        </figcaption>
-                    </figure>
-                </li>
+                        </div>
+                    </div>
+                </div>
 
-                <li class="tdee-item">
-                    <figure class="tdee-item-wrap">
+                <div class="tdee-item">
+                    <div class="tdee-item-wrap">
                         <img src="/static/img/lv4.webp" alt="TDEE較高活動等級">
-                        <figcaption class="tdee-item-info">
+                        <div class="tdee-item-info">
                             <p class="tdee-item-name"><strong class="tdee-item-title">身體活動程度較高</strong>（每週有運動 6~7 天）</p>
                             <p class="tdee-item-sub">呼吸及心跳快速且大量流汗的活動，如：打球、騎腳踏車、有氧運動、游泳、登山</p>
                             <p class="tdee-formula">TDEE = BMR × 1.72</p>
                             <p class="tdee-result">TDEE = <strong class="tdee-num"></strong></p>
-                        </figcaption>
-                    </figure>
-                </li>
+                        </div>
+                    </div>
+                </div>
 
-                <li class="tdee-item">
-                    <figure class="tdee-item-wrap">
+                <div class="tdee-item">
+                    <div class="tdee-item-wrap">
                         <img src="/static/img/lv5.webp" alt="TDEE激烈活動等級">
-                        <figcaption class="tdee-item-info">
+                        <div class="tdee-item-info">
                             <p class="tdee-item-name"><strong class="tdee-item-title">身體活動程度激烈</strong>(長時間運動或體力勞動工作)</p>
                             <p class="tdee-item-sub">長時間耗費體力的活動，如：長跑、運動訓練、競賽型運動</p>
                             <p class="tdee-formula">TDEE = BMR × 1.9</p>
                             <p class="tdee-result">TDEE = <strong class="tdee-num"></strong></p>
-                        </figcaption>
-                    </figure>
-                </li>
-            </ul>
-            <p class="calc-link">想知道自己的體脂肪率嗎？<a class="btn-ef1" href="{{ url('body-fat') }}" data-observer="BMR-前往體脂肪" data-track-section="calc.main" data-track-name="calc.cross.body_fat">立即計算你的體脂肪率</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </section>
-    <section class="page-news">
-        <h2 class="sec-title">BMR知識延伸閱讀</h2>
-        <div class="news-wrap">
-            @foreach($news as $item)
-                @include('web.widgets.news-card', ['item' => $item])
-            @endforeach
-        </div>
-    </section>
-    
-</main>
-@include('web.widgets.update-box')
+    </div>
+    <div class="fqa wrapper column">
+        <p class="main-title">BMR常見疑問</p>
+        @foreach($faqs as $key=>$faq)
+            @if($key>5)
+                @break
+            @endif
+            <div class="faq-item wow animate__animated animate__fadeInUp">
+                <div class="faq-question">
+                    <span class="question-text">Q：{{ $faq->questions }}</span>
+                    <i class="iconfont faq-icon">&#xeca2;</i>
+                </div>
+                <p class="faq-answer">A：{{ $faq->answers }}</p>
+            </div>
+        @endforeach
+
+    </div>
+    <div class="page-news wrapper column">
+        <p class="main-title">延伸閱讀</p>
+        @foreach($news as $item)
+            <div class="item">
+                <a class="info" href="{{ url('news/'.$item->id) }}">
+                    <div class="Img"><img src="{{ asset('uploads/'.$item->img) }}" alt="{{ $item->title }}"></div>
+                    <div class="Txt">
+                        <div class="newsInfoIdxBox">
+                            <p class="newsDateBox">
+                                <span class="day">{{ $item->release_at->format('d') }}</span>
+                                <span class="ym">{{ $item->release_at->format('M') }}</span>
+                            </p>
+                            <p class="title">{{ $item->title }}</p>
+                        </div>
+                        <p class="sub">
+                            {{ \Illuminate\Support\Str::limit($item->brief?$item->brief:strip_tags($item->content),680) }}
+                        </p>
+                        <span class="go">閱讀全文<i class="iconfont">&#xe684;</i></span>
+                    </div>
+                </a>
+            </div>
+        @endforeach
+    </div>
 @endsection
+@section('breadcrumb')
+    <li class="active">{!! app('cache.config')->get('page_bmr_title') !!}</li>
+@stop

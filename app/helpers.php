@@ -291,3 +291,15 @@ if (! function_exists('release_asset')) {
         return "{$prefix}/{$path}{$sep}{$cacheBuster}";
     }
 }
+
+function configToArray($content){
+
+    $data = [];
+    if($content){
+        $data = json_decode($content,true);
+    }
+
+    return $data;
+}
+
+

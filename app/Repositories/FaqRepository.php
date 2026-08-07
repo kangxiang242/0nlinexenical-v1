@@ -25,16 +25,6 @@ class FaqRepository extends Repository
         return $faq;
     }
 
-    public function getByUri($uri, $is_cache = true){
-        $cacheKey = config('global.cache.faq') . ':' . $uri;
-        if (Cache::has($cacheKey) && $is_cache){
-            return Cache::get($cacheKey);
-        }
-        $faq = $this->model()->where('uri', $uri)->where('status', 1)->orderBy('sort')->get();
-        Cache::set($cacheKey, $faq);
-        return $faq;
-    }
-
     public function limit($limit = null){
         $this->limit = $limit;
         return $this;

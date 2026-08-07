@@ -1,6 +1,6 @@
 @foreach($data as $key=>$v)
     <label class="store-item" for="store-{{ $v['shop_no'] }}">
-        <input class="form-radio store-radio" {{ count($data)<=1?"checked":"" }} data-noshow="{{ count($data)<=1?"1":"" }}" name="store_id" type="radio" value="{{ $v['shop_no'] }}" id="store-{{ $v['shop_no'] }}" data-name="{{ $v['shop_name'] }}" data-address="{{ $v['shop_address'] }}">
+        <input class="form-radio store-radio" {{ count($data)<=1?"checked":"" }} data-noshow="{{ count($data)<=1?"1":"" }}" name="store_id" type="radio" value="{{ $v['shop_no'] }}" id="store-{{ $v['shop_no'] }}">
         <div class="store-content">
             
             <svg class="sevenicon" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xml:space="preserve" width="271.95663" height="264.24695" style="fill-rule:evenodd" viewBox="0 0 272.68729 257.44435" id="svg2" version="1.1" inkscape:version="0.48.1 " sodipodi:docname="AJAX.svg"><metadata id="metadata40"><rdf:RDF><cc:Work rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/></cc:Work></rdf:RDF></metadata><sodipodi:namedview pagecolor="#ffffff" bordercolor="#666666" borderopacity="1" objecttolerance="10" gridtolerance="10" guidetolerance="10" inkscape:pageopacity="0" inkscape:pageshadow="2" inkscape:window-width="1280" inkscape:window-height="1004" id="namedview38" showgrid="false" inkscape:zoom="1.1149061" inkscape:cx="244.05554" inkscape:cy="140.10103" inkscape:window-x="-8" inkscape:window-y="-8" inkscape:window-maximized="1" inkscape:current-layer="svg2" fit-margin-top="0" fit-margin-left="0" fit-margin-right="0" fit-margin-bottom="0"/>
@@ -19,28 +19,9 @@
             </svg>
 
             <div class="store-info">
-                <p class="store-name">{{ $v['shop_name'] }} 門市</p>
+                <p class="store-name">{{ $v['shop_name'] }} 門店</p>
                 <p class="store-address">{{ str_replace($city_name.$county_name,'',$v['shop_address']) }}</p>
             </div>
         </div>
     </label>
 @endforeach
-
-<script>
-    // 直接執行，確保 AJAX 加載後也能運作
-    (function(){
-        // 初始化已選中門市的 data
-        var \$checked = $('input[name="store_id"]:checked');
-        if (\$checked.length) {
-            updateStoreHidden(\$checked);
-        }
-        // 切換門市時更新 hidden input
-        $('input[name="store_id"]').on('change', function(){
-            updateStoreHidden($(this));
-        });
-        function updateStoreHidden($el) {
-            $('#store-name-input').val($el.data('name'));
-            $('#store-address-input').val($el.data('address'));
-        }
-    })();
-</script>

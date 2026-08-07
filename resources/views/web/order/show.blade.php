@@ -111,13 +111,10 @@
                 title: flash_data.title,
                 text: flash_data.message,
                 icon: 'success',
-                confirmButtonText: '好的'
+                confirmButtonText: '我知道了'
             })
         }
-        document.addEventListener('DOMContentLoaded', function () {
-            if (!window.XenicalTracker) return;
-            XenicalTracker.conversion('view_order', { order_no: @json($order->no ?? ''), status: 'success' }, 'order_success');
-        });
+
     </script>
 @stop
 
@@ -140,7 +137,7 @@
                     <div class="item">
                         <label><span>訂單人</span></label>
                         <div class="conta">{{ $order->name }}</div>
-                        <label><span>聯絡電話</span></label>
+                        <label><span>聯繫電話</span></label>
                         <div class="conta">{{ $order->phone }}</div>
                         <label><span>電子信箱</span></label>
                         <div class="conta">{{ $order->email }}</div>
@@ -153,7 +150,7 @@
                             @foreach($order->products as $item)
                                 <div class="shopitem">
                                     <div class="shopImg">
-                                        <img src="{{ asset('uploads/'.$item->product_img) }}" alt="{{ $item->product_name }}" loading="lazy" decoding="async">
+                                        <img src="{{ asset('uploads/'.$item->product_img) }}" alt="{{ $item->product_name }}">
                                     </div>
                                     <div class="shopMsg">
                                         <span class="name">{!! $item->is_added?"<em>[加購]</em>":"" !!}{{ $item->product_name }}</span>
@@ -169,7 +166,7 @@
                     <div class="item">
                         <label><span>配送方式</span></label>
                         <div class="conta">
-                            {{ $order->delivery_type?"超商(7-11) 取貨付款":"宅配 貨到付款" }}
+                            {{ $order->delivery_type?"超商(7-11) 取貨付款":"快遞宅配 貨到付款" }}
                         </div>
                         <label><span>訂單總價</span></label>
                         <div class="conta">
@@ -190,7 +187,7 @@
                     @endif
                     <div class="item">
                         <label><span>地址</span></label>
-                        @if($order->delivery_type > 0 && $order->address)
+                        @if($order->delivery_type > 0)
                             <div class="conta">{{ $order->address }}</div>
                         @else
                             <div class="conta">{{ $order->city.$order->county.$order->street.$order->address }}</div>

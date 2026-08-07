@@ -1,89 +1,45 @@
-@extends('web::layout.layout')
+@extends('web.layout')
 
 @section('style')
     @parent
-    <!-- <link rel="stylesheet" type="text/css" href="{{ asset('static/less/bmi.css') }}?ver={{ config('app.asset_version') }}"/> -->
+    <link rel="stylesheet" type="text/css" href="{{ asset('static/less/bmi.css') }}?ver={{ config('app.asset_version') }}"/>
     <style>
         blockquote{
             border-left: 5px solid rgba(0,0,0,.05);
             padding: 20px;
-
             font-style: italic;
-
             position: relative;
             margin: 1.5em 1em 1.5em 3em;
             font-size: 1.2em;
             line-height: inherit;
 
         }
-        .editor ul {
-            list-style: disc;
-            margin: 0 0 1.5em 3em;
-        }
-        .editor li{
-            list-style: disc;
-            margin-bottom: 20px;
-        }
-        .editor ul li::marker{
 
-            unicode-bidi: isolate;
-            font-variant-numeric: tabular-nums;
-            text-transform: none;
-            text-indent: 0px !important;
-            text-align: start !important;
-            text-align-last: start !important;
-        }
-        .editor p{
-            margin-bottom: 1.8em;
-            font-size: 18px;
-        }
-
-        .editor h2{
-            margin-bottom: 20px;
-            font-size: 2.4em;
-        }
     </style>
 @stop
 
 @section('script')
+    @parent
     <script src="{{ asset('static/js/jquery.leoTextAnimate.js') }}?ver={{ config('app.asset_version') }}"></script>
     <script>
-        const digitSymbols = ['?', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
         let lastDigits = ['?', '?', '?'];
-
-        function initDigit(el) {
-            const inner = el.querySelector('.digit-inner');
-            inner.innerHTML = digitSymbols.map(symbol => `<span>${symbol}</span>`).join('');
-        }
-
         function animateDigit(el, num, alwaysSpin = false) {
+            const digitHeight = 44;
             const inner = el.querySelector('.digit-inner');
-            if (!inner) {
-                return;
-            }
-            const firstSpan = inner.querySelector('span');
             let targetIndex = num === '?' ? 0 : (parseInt(num, 10) + 1);
             let currentTransform = inner.style.transform || 'translateY(0)';
             let currentIndex = 0;
-            const emMatch = currentTransform.match(/translateY\(-([\d.]+)em\)/);
-            if (emMatch) {
-                currentIndex = Math.round(parseFloat(emMatch[1]));
-            } else {
-                const pxMatch = currentTransform.match(/translateY\(-([\d.]+)px\)/);
-                if (pxMatch && firstSpan) {
-                    const digitHeight = Math.max(1, Math.round(firstSpan.offsetHeight || firstSpan.getBoundingClientRect().height));
-                    currentIndex = Math.round(parseFloat(pxMatch[1]) / digitHeight);
-                }
-            }
+            const match = currentTransform.match(/-([0-9]+)px/);
+            if (match) currentIndex = Math.round(parseInt(match[1], 10) / digitHeight);
 
             if (!alwaysSpin && currentIndex === targetIndex) return;
             let rounds = alwaysSpin ? 1 : 0;
             let totalIndex = targetIndex + (rounds * 11);
             inner.style.transition = 'none';
-            inner.style.transform = 'translateY(0)';
+            inner.style.transform = `translateY(0)`;
             void inner.offsetWidth;
             inner.style.transition = 'transform 1s ease-out';
-            inner.style.transform = 'translateY(-' + totalIndex + 'em)';
+            inner.style.transform = `translateY(-${totalIndex * digitHeight}px)`;
         }
 
         function animateBMIDisplay(bmi) {
@@ -101,25 +57,16 @@
             lastDigits = [digits[0] || '0', digits[1] || '0', digits[3] || '0'];
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const digitEls = [
-                document.getElementById('int1'),
-                document.getElementById('int2'),
-                document.getElementById('dec1'),
-            ];
-
-            digitEls.forEach(function(el) {
-                initDigit(el);
-                animateDigit(el, '?');
-            });
+        
+        window.addEventListener('DOMContentLoaded', function() {
+            animateDigit(document.getElementById('int1'), '?');
+            animateDigit(document.getElementById('int2'), '?');
+            animateDigit(document.getElementById('dec1'), '?');
             lastDigits = ['?', '?', '?'];
+        });
 
-            document.querySelectorAll('#height, #weight').forEach(function(input) {
-                input.addEventListener('input', function() {
-                    this.value = this.value.replace(/\D/g, '').slice(0, 3);
-                });
-            });
-
+        
+        document.addEventListener('DOMContentLoaded', function() {
             document.querySelector('.count').addEventListener('click', function () {
                 const height = parseFloat(document.getElementById('height').value);
                 const weight = parseFloat(document.getElementById('weight').value);
@@ -136,46 +83,118 @@
             document.querySelector('.reset').addEventListener('click', function () {
                 document.getElementById('height').value = '';
                 document.getElementById('weight').value = '';
-                digitEls.forEach(function(el) {
-                    animateDigit(el, '?');
-                });
+                animateDigit(document.getElementById('int1'), '?');
+                animateDigit(document.getElementById('int2'), '?');
+                animateDigit(document.getElementById('dec1'), '?');
                 lastDigits = ['?', '?', '?'];
             });
         });
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function debounce(func, wait) {
+                let timeout;
+                return function() {
+                    const context = this;
+                    const args = arguments;
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func.apply(context, args), wait);
+                };
+            }
+
+            const faqItems = document.querySelectorAll('.faq-item');
+
+            function calculateHeights() {
+                faqItems.forEach(item => {
+                    const question = item.querySelector('.faq-question');
+                    const answer = item.querySelector('.faq-answer');
+
+                    const wasOpen = item.classList.contains('open');
+                    if (!wasOpen) {
+                        item.classList.add('open');
+                        item.offsetHeight;
+                    }
+
+                    const questionHeight = question.offsetHeight;
+                    const fullHeight = item.offsetHeight;
+
+                    item.style.setProperty('--collapsed-height', `${questionHeight}px`);
+                    item.style.setProperty('--expanded-height', `${fullHeight}px`);
+
+                    if (!wasOpen) {
+                        item.classList.remove('open');
+                    }
+                });
+            }
+
+            calculateHeights();
+
+            if (faqItems.length > 0) {
+                faqItems[0].classList.add('open');
+            }
+
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                question.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const isOpen = item.classList.contains('open');
+                    
+                    faqItems.forEach(otherItem => {
+                        if (otherItem !== item && otherItem.classList.contains('open')) {
+                            otherItem.classList.remove('open');
+                        }
+                    });
+
+                    if (isOpen) {
+                        item.classList.remove('open');
+                    } else {
+                        item.classList.add('open');
+                    }
+                });
+            });
+
+            window.addEventListener('resize', debounce(calculateHeights, 250));
+        });
+    </script>
+@stop
+
+
+
+@section('embed-banner')
+    <div class="embed-banner wrapper column">
+        <h1 class="page-title main-title">{!! app('cache.config')->get('page_evaluate_title') !!}</h1>
+        <div class="title-sub">{!! str_replace(PHP_EOL,'<br>',app('cache.config')->get('page_evaluate_desc')) !!}</div>
+    </div>
 @stop
 
 @section('content')
-<main>
-    @include('web.widgets.head-banner')
-    @include('web.widgets.breadcrumb', ['itemsHtml' => '<li class="breadcrumb__item">BMI計算</li>'])
-    {{--
-    <section class="editor">
+    
+    <div class="editor">
         {!! app('cache.config')->get('page_evaluate_article') !!}
-    </section>
-    --}}
-    <section class="calc-wrapper" data-track-section-view data-track-section="calc.main" data-track-section-label="BMI 計算器">
-        <h2 class="sr-only">立即計算你的BMI指數</h2>
-        <div class="calculate">
-            <h3 class="calc-title">BMI計算</h3>
-            <p class="calc-sub">僅需輸入身高與體重，即可快速計算出BMI值，並參考BMI標準參照表，了解自己的身體狀況。</p>
-            <form class="evaluate-form">
+    </div>
+    <div class="bmi-wrapper">
+        <div class="calculate column">
+            <div class="bmi-modal">
+                <p class="bmi-title">BMI計算器</p>
+                <p class="bmi-sub">{!! app('cache.config')->get('page_bmi_subdesc') !!}</p>
+            </div>
+            <form class="evaluate-form" onsubmit="return false;">
                 <div class="form-group">
-                    <label class="form-title" for="height">請輸入身高：</label>
-                    <input class="form-control" type="number" id="height" name="height" placeholder="公分" inputmode="numeric" min="1" max="999">
+                    <label class="form-title" for="height">你的身高：</label>
+                    <input class="form-control" type="number" id="height" name="height" placeholder="公分" inputmode="decimal">
                 </div>
                 <div class="form-group">
-                    <label class="form-title" for="weight">請輸入體重：</label>
-                    <input class="form-control" type="number" id="weight" name="weight" placeholder="公斤" inputmode="numeric" min="1" max="999">
+                    <label class="form-title" for="weight">你的體重：</label>
+                    <input class="form-control" type="number" id="weight" name="weight" placeholder="公斤" inputmode="decimal">
                 </div>
                 <div class="btns">
                     <button class="btn reset" type="reset">重設</button>
                     <button class="btn count btn-ef1" type="button">開始計算</button>
                 </div>
-                <p class="privacy-note">本工具僅於瀏覽器運算，不會傳送或儲存任何輸入資料。如需更多資訊，請參閱<a href="/privacy">隱私權政策</a>。</p>
+                <p class="privacy-note">本計算器僅於瀏覽器端運算，不會傳送或儲存任何輸入資料。如需更多資訊，請參閱<a href="/privacy"">隱私權政策</a>。</p>
             </form>
             <div class="result">
-                <h4 class="result-title">你的BMI結果為</h4>
+                <p class="result-title">你的BMI結果為</p>
                 <p class="result-num" >
                     <span class="digit" id="int1" aria-hidden="true">
                         <span class="digit-inner">
@@ -196,56 +215,77 @@
                 </p>
             </div>
         </div>
-
-        <div class="calc-table">
-            <h2 class="calc-title">BMI標準參照表</h2>
-            {{--<p class="calc-sub">描述</p>--}}
+        <div class="comparison column">
+            <div class="bmi-modal">
+                <p class="bmi-title">BMI參照表</p>
+                <p class="bmi-sub">{!! app('cache.config')->get('page_bmi_subdesc2') !!}</p>
+            </div>
             <table class="bmi-table">
                 <thead>
                     <tr>
-                    <th>歐美BMI標準</th>
-                    <th>亞太區BMI標準</th>
-                    <th>建議</th>
+                    <th scope="col">BMI值範圍</th>
+                    <th scope="col">體重是否正常</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr class="bmi-underweight">
-                    <td>&lt;18.5</td>
-                    <td>&lt;18.5</td>
+                    <td>BMI&lt;18.5</td>
                     <td>「體重過輕」，需要多運動，均衡飲食，以增加體能，維持健康！</td>
                     </tr>
                     <tr class="bmi-normal">
-                    <td>18.5-24.9</td>
-                    <td>18.5-22.9</td>
+                    <td>18.5&le;BMI&lt;24</td>
                     <td>恭喜！「健康體重」，要繼續保持！</td>
                     </tr>
                     <tr class="bmi-overweight">
-                    <td>25-29.9</td>
-                    <td>23-24.9</td>
+                    <td>24&le;BMI&lt;27</td>
                     <td>哦！有點「體重過重」了，要小心囉，趕快力行「健康體重管理」！</td>
                     </tr>
                     <tr class="bmi-obese">
-                    <td>&ge;30</td>
-                    <td>&ge;25</td>
+                    <td>BMI&ge;27</td>
                     <td>啊～「肥胖」了，需要立刻力行「健康體重管理」囉！</td>
                     </tr>
                 </tbody>
             </table>
-            <p class="calc-sub">資料來源：衛生福利部國民健康署</p>
-            <p class="calc-link">想知道自己的每日總消耗熱量嗎？<a class="btn-ef1" href="{{ url('bmr') }}" data-observer="BMI-前往BMR" data-track-section="calc.main" data-track-name="calc.cross.bmr">立即計算你的BMR</a></p>
+            <p class="bmi-sub">資料來源：衛生福利部國民健康署</p>
         </div>
-    </section>
+    </div>
+    <div class="fqa wrapper column">
+        <p class="main-title">BMI常見疑問</p>
+        @foreach($faqs as $key=>$faq)
+            <div class="faq-item wow animate__animated animate__fadeInUp">
+                <div class="faq-question">
+                    <span class="question-text">Q：{{ $faq->questions }}</span>
+                    <i class="iconfont faq-icon">&#xeca2;</i>
+                </div>
+                <p class="faq-answer">A：{{ $faq->answers }}</p>
+            </div>
+        @endforeach
 
-    <section class="page-news">
-        <h2 class="sec-title">BMI專欄閱讀</h2>
-        <div class="news-wrap">
-            @foreach($news as $item)
-                @include('web.widgets.news-card', ['item' => $item])
-            @endforeach
-        </div>
-    </section>
-        
-    
-</main>
-@include('web.widgets.update-box')
+    </div>
+    <div class="page-news wrapper column">
+        <p class="main-title">延伸閱讀</p>
+        @foreach($news as $item)
+            <div class="item">
+                <a class="info" href="{{ url('news/'.$item->id) }}">
+                    <div class="Img"><img src="{{ asset('uploads/'.$item->img) }}" alt="{{ $item->title }}"></div>
+                    <div class="Txt">
+                        <div class="newsInfoIdxBox">
+                            <p class="newsDateBox">
+                                <span class="day">{{ $item->release_at->format('d') }}</span>
+                                <span class="ym">{{ $item->release_at->format('M') }}</span>
+                            </p>
+                            <p class="title">{{ $item->title }}</p>
+                        </div>
+                        <p class="sub">
+                            {{ \Illuminate\Support\Str::limit($item->brief?$item->brief:strip_tags($item->content),680) }}
+                        </p>
+                        <span class="go">閱讀全文<i class="iconfont">&#xe684;</i></span>
+                    </div>
+                </a>
+            </div>
+        @endforeach
+    </div>
 @endsection
+@section('breadcrumb')
+    <li class="active">{!! app('cache.config')->get('page_evaluate_title') !!}</li>
+@stop

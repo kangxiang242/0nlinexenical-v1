@@ -1,4 +1,4 @@
-@extends('web.layout.layout')
+@extends('web.layout')
 @section('title', "Not Found")
 @section('keywords', "")
 @section('description', "")
@@ -43,6 +43,7 @@
 </style>
 @stop
 @section('script')
+    @parent
     <script>
         $('#banner').remove();
         $('.parallax_holder').remove();

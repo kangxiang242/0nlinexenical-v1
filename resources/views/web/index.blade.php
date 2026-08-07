@@ -32,7 +32,8 @@
 
         .splitting .word {
             display: inline-block;
-            overflow: hidden
+            overflow: hidden;
+            padding-right: 10px;
         }
 
         .splitting .char {
@@ -173,7 +174,6 @@
 
 @section('script')
     @parent
-    <script src="{{ asset('static/js/xie.js') }}?ver={{ config('app.asset_version') }}"></script>
     <script src="{{ asset('static/js/jquery.textAnimation.min.js') }}?ver={{ config('app.asset_version') }}"></script>
     <script src="{{ asset('static/js/jquery.waypoints.min.js') }}?ver={{ config('app.asset_version') }}"></script>
     <script src="{{ asset('static/js/countUp.min.js') }}?ver={{ config('app.asset_version') }}"></script>
@@ -182,18 +182,29 @@
     <script src="{{ asset('static/js/jquery.marquee.min.js') }}?ver={{ config('app.asset_version') }}"></script>
     <script>
         $(window).resize(function(){
-            resizeVideo();
+
+            handleVideoResize();
         });
 
-        resizeVideo();
-        function resizeVideo(){
+        handleVideoResize();
 
-            var video_width = 1000+parseInt($('.suit').find('.wrapper').css('marginLeft'));
-            $('.video-main').css('width',video_width);
-            var left = $('.shop-btn').offset().left
-            $('.shop-btn a').css('left',left+4);
+        function handleVideoResize() {
+            if (window.innerWidth > 1024) {
+                resizeVideo();
+            } else {
+                var screenWidth = window.innerWidth;
+                var mWidth = Math.round(screenWidth * 0.8);
+                $('.video-main').css('width', mWidth + 'px');
+            }
+        }
+
+        function resizeVideo(){
+            var marginLeft = parseInt($('.about.wrapper').css('marginLeft')) || 0;
+            var video_width = 1000 + marginLeft;
+            $('.video-main').css('width', video_width + 'px');
         }
     </script>
+
     <script>
         var is_epilogue_waypoints = false;
         $('.epilogue').waypoint(function(direction) {
@@ -231,8 +242,8 @@
             $('.slogan').textAnimation({
                 speed: 600,
                 delay: 100,
-                left: 50,
-                top: 50,
+                left: 10,
+                top: 10,
                 scale: 1,
                 rotateY: 0,
                 rotateX: 0,
@@ -246,12 +257,14 @@
                 isRandomRotateX: false,
                 isRandomTranslateZ: false,
                 isRandomSpeed: false,
-                isRandomDelay: false});
+                isRandomDelay: false
+            });
+
         },1000)
 
 
         $('#use-num').waypoint(function(direction) {
-            let demo = new CountUp('use-num',0, 100000,0,2,{
+            let demo = new CountUp('use-num',0, 25000000,0,4,{
                 useEasing: true,
                 useGrouping: true,
             });
@@ -261,7 +274,7 @@
             offset: '100%'
         })
 
-        $('.timeline').waypoint(function(direction) {
+        $('.chooseline').waypoint(function(direction) {
 
             $('#ts-svg').addClass('ts-svg')
 
@@ -287,30 +300,21 @@
         })
 
     </script>
-
-
-
-
     <script>
-        textAnimation("#text-banner-0 #banner-p1");
-        textAnimation("#text-banner-0 #banner-p2");
-        textAnimation("#text-banner-0 #banner-p3");
+        textAnimation("#text-banner-0 .text-effect-p1");
+        textAnimation("#text-banner-0 .text-effect-p2");
+        textAnimation("#text-banner-0 .text-effect-p3");
 
-        textAnimation("#text-banner-1 #banner-p1");
-        textAnimation("#text-banner-1 #banner-p2");
-        textAnimation("#text-banner-1 #banner-p3");
+        textAnimation("#text-banner-1 .text-effect-p1");
+        textAnimation("#text-banner-1 .text-effect-p2");
+        textAnimation("#text-banner-1 .text-effect-p3");
 
-        textAnimation("#text-banner-2 #banner-p1");
-        textAnimation("#text-banner-2 #banner-p2");
-        textAnimation("#text-banner-2 #banner-p3");
-
-
-
+        textAnimation("#text-banner-2 .text-effect-p1");
+        textAnimation("#text-banner-2 .text-effect-p2");
+        textAnimation("#text-banner-2 .text-effect-p3");
 
     </script>
     <script>
-
-
         var state = 0; //0表示没有进行动画过渡，1表示在进行动画过渡
         function rotate(dir) {
 
@@ -428,113 +432,178 @@
 
             }
         }
-
-
-        $('.question-show').click(function(){
-            var is_show = $(this).attr('data-show');
-            var height = $(this).find('.q-desc').height()+10+$(this).find('.q-title').height()
-            if(!is_show){
-                $(this).css('height',height);
-                $(this).attr('data-show',1);
-                $(this).find('.q-icon').html('&#xeca2;');
-            }else{
-                $(this).css('height',$(this).find('.q-title').height());
-                $(this).removeAttr('data-show');
-                $(this).find('.q-icon').html('&#xe775;');
-            }
-
-        });
-
     </script>
 
     <script>
-        var interleaveOffset = 0.5;
-        var bannerImageScale=1.1;
-        var swiperOptions = {
-            allowTouchMove: true,
-            autoplay: {
-                delay: 6000,
-                disableOnInteraction: false
-            },
-            grabCursor: true,
-            watchSlidesProgress: true,
-            mousewheelControl: true,
-            speed: 1000,
-            loop: true,
-            pagination: {
-                el: '.progress',
+        function loadVideo(video) {
+            if (!video || video.querySelector('source')) {
+                return;
+            }
+            
+            const isMobile = window.innerWidth <= 1024;
+            const pcSrc = video.getAttribute('data-pc');
+            const mSrc = video.getAttribute('data-m');
+            const src = isMobile ? mSrc : pcSrc;
 
-                renderBullet: function (index, className) {
-                    return '<div class="bar ' + className + '"></div>';
-                },
-            },
-            on: {
-                init:function(){
+            const posterPc = video.getAttribute('data-poster-pc');
+            const posterM = video.getAttribute('data-poster-m');
+            if (posterPc && posterM) {
+                video.poster = isMobile ? posterM : posterPc;
+            }
 
-                },
-                slideChange: function(){
-
-                    var eq = this.activeIndex;
-                    var elem = $(this.slides[eq]).find(".slide-inner").attr('data-bind-text');
-                    $(this.slides[eq]).find(".slide-inner video")[0].play()
-                    $('#'+elem).find('.text-animation-main').addClass('-show');
-                    $('#'+elem).siblings().find('.text-animation-main').removeClass('-show');
-                },
-                progress: function() {
-                    var swiper = this;
-                    for (var i = 0; i < swiper.slides.length; i++) {
-                        var slideProgress = swiper.slides[i].progress;
-                        var innerOffset = swiper.width * interleaveOffset;
-                        var innerTranslate = slideProgress * innerOffset;
-
-                        var innerScaleOffset = Math.abs(1 - bannerImageScale);
-                        var innerScale = Math.abs(slideProgress * innerScaleOffset) + 1;
-                        //swiper.slides[i].querySelector(".slide-inner").style.transform = "translate3d(".concat(innerTranslate, "px, 0, 0) scale(").concat(innerScale, ")");
-                        swiper.slides[i].querySelector(".slide-inner").style.transform =
-                            "translate3d(" + innerTranslate + "px, 0, 0)";
-                    }
-                },
-                touchStart: function() {
-                    var swiper = this;
-                    for (var i = 0; i < swiper.slides.length; i++) {
-                        swiper.slides[i].style.transition = "";
-                    }
-                },
-                setTransition: function(speed) {
-                    var swiper = this;
-                    for (var i = 0; i < swiper.slides.length; i++) {
-                        swiper.slides[i].style.transition = speed + "ms";
-                        swiper.slides[i].querySelector(".slide-inner").style.transition = speed + "ms";
-                    }
+            const source = document.createElement('source');
+            source.src = src;
+            source.type = 'video/mp4';
+            video.appendChild(source);
+            video.load();
+        }
+        
+        function playVideo(video) {
+            if (!video) return;
+            
+            if (!video.querySelector('source')) {
+                loadVideo(video);
+                
+                video.addEventListener('canplay', function playVideoHandler() {
+                    video.play().catch(() => {});
+                    video.removeEventListener('canplay', playVideoHandler);
+                }, { once: true });
+            } else {
+                if (video.readyState >= 2) {
+                    video.play().catch(() => {});
+                } else {
+                    video.addEventListener('canplay', function playVideoHandler() {
+                        video.play().catch(() => {});
+                        video.removeEventListener('canplay', playVideoHandler);
+                    }, { once: true });
                 }
             }
-        };
-
-        var swiper = new Swiper("#swiper-video3", swiperOptions);
-
-    </script>
-
-
-
-    <script>
-        $(document).scroll(function() {
-            var scroH = $(document).scrollTop();  //滚动高度
-            var viewH = $(window).height();  //可见高度
-            var contentH = $(document).height();  //内容高度
-
-            if(scroH> 10){
-                $('header').addClass('header-index')
-
+        }
+        
+        document.addEventListener("DOMContentLoaded", function () {
+            initSwiperVideo();
+            
+            const loadFirstVideo = () => {
+                const initialVideoEls = document.querySelectorAll('.video-el');
+                const firstVideo = initialVideoEls[0];
+                
+                if (firstVideo) {
+                    setTimeout(() => {
+                        loadVideo(firstVideo);
+                        firstVideo.addEventListener('canplay', function() {
+                            playVideo(firstVideo);
+                        }, { once: true });
+                    }, 100);
+                }
+            };
+            
+            if ('requestIdleCallback' in window) {
+                requestIdleCallback(loadFirstVideo, { timeout: 2000 });
+            } else {
+                setTimeout(loadFirstVideo, 500);
             }
-
-            if(scroH <10){  //距离顶部大于100px时
-                $('header').removeClass('header-index')
-            }
-
         });
 
+        function initSwiperVideo() {
+            if (window._swiperInitialized) return;
+            window._swiperInitialized = true;
 
+            const interleaveOffset = 0.5;
+            const bannerImageScale = 1.1;
+            
+            const swiper = new Swiper("#swiper-video3", {
+                loop: true,
+                speed: 1000,
+                autoplay: {
+                    delay: 6000,
+                    disableOnInteraction: false
+                },
+                grabCursor: true,
+                watchSlidesProgress: true,
+                pagination: {
+                    el: '.progress',
+                    clickable: true,
+                    renderBullet: function (index, className) {
+                        return '<div class="bar ' + className + '"></div>';
+                    }
+                },
+                on: {
+                    init: function() {
+                        const firstSlide = this.slides[this.activeIndex];
+                        const firstVideo = firstSlide?.querySelector("video");
+                        if (firstVideo) {
+                            const isMobile = window.innerWidth <= 1024;
+                            const posterPc = firstVideo.getAttribute('data-poster-pc');
+                            const posterM = firstVideo.getAttribute('data-poster-m');
+                            if (posterPc && posterM) {
+                                firstVideo.poster = isMobile ? posterM : posterPc;
+                            }
+                        }
+                    },
+                    slideChange: function () {
+                        const eq = this.activeIndex;
+                        const slide = this.slides[eq];
+                        const video = slide.querySelector("video");
 
+                        if (video) {
+                            const isMobile = window.innerWidth <= 1024;
+                            const posterPc = video.getAttribute('data-poster-pc');
+                            const posterM = video.getAttribute('data-poster-m');
+                            if (posterPc && posterM) {
+                                video.poster = isMobile ? posterM : posterPc;
+                            }
+                            
+                            playVideo(video);
+                        }
+
+                        const bindTextId = slide.querySelector(".slide-inner")?.getAttribute("data-bind-text");
+                        if (!bindTextId) return;
+
+                        document.querySelectorAll('.text-animation-main').forEach(el => {
+                            el.classList.remove('-show');
+                        });
+
+                        const currentGroup = document.getElementById(bindTextId);
+                        if (currentGroup) {
+                            currentGroup.querySelectorAll('.text-animation-main').forEach(el => {
+                                el.classList.add('-show');
+                            });
+                        }
+                    },
+                    progress: function () {
+                        const swiper = this;
+                        for (let i = 0; i < swiper.slides.length; i++) {
+                            const slideProgress = swiper.slides[i].progress;
+                            const innerOffset = swiper.width * interleaveOffset;
+                            const innerTranslate = slideProgress * innerOffset;
+                            const innerScaleOffset = Math.abs(1 - bannerImageScale);
+                            const innerScale = Math.abs(slideProgress * innerScaleOffset) + 1;
+                            const inner = swiper.slides[i].querySelector(".slide-inner");
+                            if (inner) {
+                                inner.style.transform = "translate3d(" + innerTranslate + "px, 0, 0)";
+                            }
+                        }
+                    },
+                    touchStart: function () {
+                        const swiper = this;
+                        Array.from(swiper.slides).forEach(slide => {
+                            slide.style.transition = "";
+                        });
+                    },
+                    setTransition: function (speed) {
+                        const swiper = this;
+                        Array.from(swiper.slides).forEach(slide => {
+                            slide.style.transition = speed + "ms";
+                            const inner = slide.querySelector(".slide-inner");
+                            if (inner) inner.style.transition = speed + "ms";
+                        });
+                    }
+                }
+            });
+        }
+    </script>
+
+    <script>
         var is_marq = false;
         var animation_duration;
         $('#loopWrap').marquee({
@@ -558,324 +627,521 @@
         $(".epilogue-img").parallax({
             speed:20,
             delay: 1000,
-            deviation:300,
+            deviation:600,
         });
 
     </script>
 
+    <script>
+        let lastDigits = ['?', '?', '?'];
+        function animateDigit(el, num, alwaysSpin = false) {
+            const digitHeight = 44;
+            const inner = el.querySelector('.digit-inner');
+            let targetIndex = num === '?' ? 0 : (parseInt(num, 10) + 1);
+            let currentTransform = inner.style.transform || 'translateY(0)';
+            let currentIndex = 0;
+            const match = currentTransform.match(/-([0-9]+)px/);
+            if (match) currentIndex = Math.round(parseInt(match[1], 10) / digitHeight);
+
+            if (!alwaysSpin && currentIndex === targetIndex) return;
+            let rounds = alwaysSpin ? 1 : 0;
+            let totalIndex = targetIndex + (rounds * 11);
+            inner.style.transition = 'none';
+            inner.style.transform = `translateY(0)`;
+            void inner.offsetWidth;
+            inner.style.transition = 'transform 1s ease-out';
+            inner.style.transform = `translateY(-${totalIndex * digitHeight}px)`;
+        }
+
+        function animateBMIDisplay(bmi) {
+            const fixedBMI = bmi.toFixed(1);
+            const [intPartRaw, decPartRaw] = fixedBMI.split('.');
+            const intPart = intPartRaw.padStart(2, '0');
+            const decPart = decPartRaw ? decPartRaw[0] : '0';
+            const digits = [intPart[0], intPart[1], '.', decPart];
+            const int1 = document.getElementById('int1');
+            const int2 = document.getElementById('int2');
+            const dec1 = document.getElementById('dec1');
+            animateDigit(int1, digits[0] || '0', false);
+            animateDigit(int2, digits[1] || '0', false);
+            animateDigit(dec1, digits[3] || '0', false);
+            lastDigits = [digits[0] || '0', digits[1] || '0', digits[3] || '0'];
+        }
+
+        
+        window.addEventListener('DOMContentLoaded', function() {
+            animateDigit(document.getElementById('int1'), '?');
+            animateDigit(document.getElementById('int2'), '?');
+            animateDigit(document.getElementById('dec1'), '?');
+            lastDigits = ['?', '?', '?'];
+        });
+
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('.count').addEventListener('click', function () {
+                const height = parseFloat(document.getElementById('height').value);
+                const weight = parseFloat(document.getElementById('weight').value);
+
+                if (!height || !weight || height <= 0 || weight <= 0) {
+                    alert("請正確輸入身高與體重");
+                    return;
+                }
+
+                const bmi = weight / ((height / 100) ** 2);
+                animateBMIDisplay(bmi);
+            });
+
+            document.querySelector('.reset').addEventListener('click', function () {
+                document.getElementById('height').value = '';
+                document.getElementById('weight').value = '';
+                animateDigit(document.getElementById('int1'), '?');
+                animateDigit(document.getElementById('int2'), '?');
+                animateDigit(document.getElementById('dec1'), '?');
+                lastDigits = ['?', '?', '?'];
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function debounce(func, wait) {
+                let timeout;
+                return function() {
+                    const context = this;
+                    const args = arguments;
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func.apply(context, args), wait);
+                };
+            }
+
+            const faqItems = document.querySelectorAll('.faq-item');
+
+            function calculateHeights() {
+                faqItems.forEach(item => {
+                    const question = item.querySelector('.faq-question');
+                    const answer = item.querySelector('.faq-answer');
+
+                    const wasOpen = item.classList.contains('open');
+                    if (!wasOpen) {
+                        item.classList.add('open');
+                        item.offsetHeight;
+                    }
+
+                    const questionHeight = question.offsetHeight;
+                    const fullHeight = item.offsetHeight;
+
+                    item.style.setProperty('--collapsed-height', `${questionHeight}px`);
+                    item.style.setProperty('--expanded-height', `${fullHeight}px`);
+
+                    if (!wasOpen) {
+                        item.classList.remove('open');
+                    }
+                });
+            }
+
+            calculateHeights();
+
+            if (faqItems.length > 0) {
+                faqItems[0].classList.add('open');
+            }
+
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                question.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const isOpen = item.classList.contains('open');
+                    
+                    faqItems.forEach(otherItem => {
+                        if (otherItem !== item && otherItem.classList.contains('open')) {
+                            otherItem.classList.remove('open');
+                        }
+                    });
+
+                    if (isOpen) {
+                        item.classList.remove('open');
+                    } else {
+                        item.classList.add('open');
+                    }
+                });
+            });
+
+            window.addEventListener('resize', debounce(calculateHeights, 250));
+        });
+    </script>
 @stop
 
 
 @section('content')
 
-    <section class="index-banner" data-track-section="hero" data-track-section-view data-track-section-label="首屏Banner">
-        <div class="logo-cont">
-            <a href="{{ url('/') }}">
-                <div class="logo-wrap">
-                    <div class="place">
-                        <div class="compose">
-                            <img class="fra-1" src="{{ asset('static/img/lg/fraw-1.png') }}" alt="logo" decoding="async">
-                            <img class="fra-2" src="{{ asset('static/img/lg/fraw-2.png') }}" alt="logo" decoding="async">
-                            <img class="fra-3"  src="{{ asset('static/img/lg/fraw-3.png') }}" alt="logo" decoding="async">
+    <div class="index-banner">
+        <p class="slogan"> 找到專屬妳的減肥方法<i class="iconfont beat">&#xe784;</i></p>
+        <div class="video-main">
+            <div class="swiper-container" id="swiper-video3">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <div class="slide-inner" data-bind-text="text-banner-0">
+                            <video class="video-el"
+                                data-pc="{{ asset('static/video/1.mp4') }}"
+                                data-m="{{ asset('static/video/m1.mp4') }}"
+                                data-poster-pc="{{ asset('static/video/poster1.webp') }}"
+                                data-poster-m="{{ asset('static/video/poster1-m.webp') }}"
+                                poster="{{ asset('static/video/poster1.webp') }}"
+                                width="100%" height="100%" loop muted playsinline
+                                preload="none" aria-hidden="true"></video>
                         </div>
-                        <div class="intact">
-                            <img class="xenical-logo" src="{{ asset('static/img/lg/xenical-2.png') }}" alt="xenical" decoding="async">
-                            <p class="text white">全球領先健康減肥藥</p>
-                        </div>
+                    </div>
 
+                    <div class="swiper-slide">
+                        <div class="slide-inner" data-bind-text="text-banner-1">
+                            <video class="video-el"
+                                data-pc="{{ asset('static/video/2.mp4') }}"
+                                data-m="{{ asset('static/video/m2.mp4') }}"
+                                data-poster-pc="{{ asset('static/video/poster2.webp') }}"
+                                data-poster-m="{{ asset('static/video/poster2-m.webp') }}"
+                                poster="{{ asset('static/video/poster2.webp') }}"
+                                width="100%" height="100%" loop muted playsinline
+                                preload="none" aria-hidden="true"></video>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide">
+                        <div class="slide-inner" data-bind-text="text-banner-2">
+                            <video class="video-el"
+                                data-pc="{{ asset('static/video/3.mp4') }}"
+                                data-m="{{ asset('static/video/m3.mp4') }}"
+                                data-poster-pc="{{ asset('static/video/poster3.webp') }}"
+                                data-poster-m="{{ asset('static/video/poster3-m.webp') }}"
+                                poster="{{ asset('static/video/poster3.webp') }}"
+                                width="100%" height="100%" loop muted playsinline
+                                preload="none" aria-hidden="true"></video>
+                        </div>
                     </div>
                 </div>
-            </a>
-        </div>
-            <div class="video-main">
-                <div class="video-wrap">
-                    <div class="swiper-container" id="swiper-video3">
-                        <div class="swiper-wrapper">
-                            <div class="swiper-slide">
-                                <div class="slide-inner" data-bind-text="text-banner-0">
-                                    <video id="video1" loop style="object-fit:cover"  muted="" width="100%" height="100%" playsinline="" preload="none" poster="/static/video/poster1.webp">
-                                        <source src="{{ asset('static/video/1.mp4') }}" type="video/mp4">
-                                    </video>
-
-                                </div>
-                            </div>
-
-                            <div class="swiper-slide">
-                                <div class="slide-inner" data-bind-text="text-banner-1">
-                                    <video style="object-fit:cover" loop muted="" width="100%" height="100%" playsinline="" preload="none" poster="/static/video/poster2.webp">
-                                        <source src="{{ asset('static/video/2.mp4') }}" type="video/mp4">
-                                    </video>
-                                </div>
-                            </div>
-
-                            <div class="swiper-slide">
-                                <div class="slide-inner" data-bind-text="text-banner-2">
-                                    <video style="object-fit:cover" loop  muted="" width="100%" height="100%" playsinline="" preload="none" poster="/static/video/poster3.webp">
-                                        <source src="{{ asset('static/video/3.mp4') }}" type="video/mp4">
-                                    </video>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <div class="shade-mask"></div>
-
-                    <div class="pill1"></div>
-                    <div class="pill2"></div>
-
-                    <div class="progress"></div>
-                    @if(!is_googlebot())
-                    <div class="text-effect" id="text-banner-0">
-                        <p class="p1" id="banner-p1">{{ app('cache.config')->get('home_banner_0_title', '安全減肥') }}</p>
-                        <p class="p2" id="banner-p2">{{ app('cache.config')->get('home_banner_0_title_en', 'Safe') }}&nbsp;</p>
-                        <p class="p3" id="banner-p3">{{ app('cache.config')->get('home_banner_0_desc', '歐盟EMA、美國FDA等多國權威認證對人體安全') }}</p>
-                    </div>
-
-                    <div class="text-effect" id="text-banner-1" >
-                        <p class="p1" id="banner-p1">{{ app('cache.config')->get('home_banner_1_title', '有效減肥') }}</p>
-                        <p class="p2" id="banner-p2">{{ app('cache.config')->get('home_banner_1_title_en', 'Effective') }}&nbsp;</p>
-                        <p class="p3" id="banner-p3">{{ app('cache.config')->get('home_banner_1_desc', '台灣上市22年，醫師首選唯一合法減肥藥') }}</p>
-                    </div>
-
-                    <div class="text-effect" id="text-banner-2" >
-                        <p class="p1" id="banner-p1">{{ app('cache.config')->get('home_banner_2_title', '健康減肥') }}</p>
-                        <p class="p2" id="banner-p2">{{ app('cache.config')->get('home_banner_2_title_en', 'Healthy') }}&nbsp;</p>
-                        <p class="p3" id="banner-p3">{{ app('cache.config')->get('home_banner_2_desc', '無須斷食動刀，健康排出油脂') }}</p>
-                    </div>
-                    @endif
-
-                </div>
-
             </div>
-        <div class="vh">
-            <div class="wrapper">
-                <div class="leg">
-                    <div class="shop-btn"><a class="btn-ef1" href="{{ url('product') }}" data-track-section="home.hero" data-track-name="home.hero.order_btn" data-observer="頂部-線上訂購">線上訂購</a></div>
-                    <div class="slogan"> 妳,滿意妳現在的身材嗎？</div>
-                    <div class="shuidi"></div>
+            <div class="progress"></div>
+            <div class="text-effect" id="text-banner-0">
+                <p class="text-effect-p1">Safety&nbsp;</p>
+                <p class="text-effect-p2">安全減肥</p>
+                <p class="text-effect-p3">穩定減重不傷身</p>
+            </div>
+            <div class="text-effect" id="text-banner-1" >
+                <p class="text-effect-p1">Effective&nbsp;</p>
+                <p class="text-effect-p2">有效減肥</p>
+                <p class="text-effect-p3">找到適合自己的減重方法</p>
+            </div>
+            <div class="text-effect" id="text-banner-2" >
+                <p class="text-effect-p1">Healthy&nbsp;</p>
+                <p class="text-effect-p2">健康減肥</p>
+                <p class="text-effect-p3">減重減脂不再復胖</p>
+            </div>
+        </div>
+        
+    </div>
+
+    <div class="bmi wrapper column">
+        <h2 class="main-title">BMI計算工具</h2>
+        <p class="title-sub">{!! app('cache.config')->get('home_bmi_desc') !!}</p>
+        <div class="bmi-wrapper">
+            <div class="calculate column">
+                <div class="bmi-modal">
+                    <p class="bmi-title">BMI計算器</p>
+                    <p class="bmi-sub">{!! app('cache.config')->get('page_bmi_subdesc') !!}</p>
+                </div>
+                <form class="evaluate-form" onsubmit="return false;">
+                    <div class="form-group">
+                        <label class="form-title" for="height">你的身高：</label>
+                        <input class="form-control" type="number" id="height" name="height" placeholder="" inputmode="decimal">
+                        <span class="form-title">公分</span>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-title" for="weight">你的體重：</label>
+                        <input class="form-control" type="number" id="weight" name="weight" placeholder="" inputmode="decimal">
+                        <span class="form-title">公斤</span>
+                    </div>
+                    <div class="btns">
+                        <button class="btn reset" type="reset">重設</button>
+                        <button class="btn count btn-ef1" type="button">開始計算</button>
+                    </div>
+                    <p class="privacy-note">本計算器僅於瀏覽器端運算，不會傳送或儲存任何輸入資料。如需更多資訊，請參閱<a href="/privacy">隱私權政策</a>。</p>
+                </form>
+                <div class="result">
+                    <p class="result-title">你的BMI結果為</p>
+                    <p class="result-num" >
+                        <span class="digit" id="int1" aria-hidden="true">
+                            <span class="digit-inner">
+                                <span>?</span><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span>
+                            </span>
+                        </span>
+                        <span class="digit" id="int2" aria-hidden="true">
+                            <span class="digit-inner">
+                                <span>?</span><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span>
+                            </span>
+                        </span>
+                        <span class="dot" aria-hidden="true">.</span>
+                        <span class="digit" id="dec1" aria-hidden="true">
+                            <span class="digit-inner">
+                                <span>?</span><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span>
+                            </span>
+                        </span>
+                    </p>
+                </div>
+            </div>
+            
+            <div class="comparison column">
+                <div class="bmi-modal">
+                    <p class="bmi-title">BMI參照表</p>
+                    <p class="bmi-sub">{!! app('cache.config')->get('page_bmi_subdesc2') !!}</p>
+                </div>
+                <table class="bmi-table">
+                    <thead>
+                        <tr>
+                        <th scope="col">BMI值範圍</th>
+                        <th scope="col">體重是否正常</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="bmi-underweight">
+                        <td>BMI&lt;18.5</td>
+                        <td>「體重過輕」，需要多運動，均衡飲食，以增加體能，維持健康！</td>
+                        </tr>
+                        <tr class="bmi-normal">
+                        <td>18.5&le;BMI&lt;24</td>
+                        <td>恭喜！「健康體重」，要繼續保持！</td>
+                        </tr>
+                        <tr class="bmi-overweight">
+                        <td>24&le;BMI&lt;27</td>
+                        <td>哦！有點「體重過重」了，要小心囉，趕快力行「健康體重管理」！</td>
+                        </tr>
+                        <tr class="bmi-obese">
+                        <td>BMI&ge;27</td>
+                        <td>啊～「肥胖」了，需要立刻力行「健康體重管理」囉！</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="bmi-sub">資料來源：衛生福利部國民健康署</p>
+            </div>
+        </div>
+        <p class="more">想了解更多關於 BMI 的知識？<a href="/bmi" class="go-btn btn-ef1">前往BMI詳細介紹<i class="iconfont">&#xe684;</i></a></p>
+    </div>
+
+    @foreach($cates as $cate)
+    <div class="method wrapper column">
+        <h2 class="main-title">{{ $cate->name }}</h2>
+        
+        <div class="method-intro">
+            <div class="method-intro-main">
+                <div class="title-sub">{!! $cate->desc !!}</div>
+                <div class="comparison">
+                    <div class="comparison-block">
+                        <p class="comparison-title">優點</p>
+                        @if($cate->advantage)
+                        <div class="comparison-list">
+                            @foreach(explode(PHP_EOL,$cate->advantage) as $k=>$v)
+                            <p class="comparison-item">{{ $v }}</p>
+                            @endforeach
+                        </div>
+                        @endif
+                    </div>
+                    <div class="comparison-block">
+                        <p class="comparison-title">缺點</p>
+                        @if($cate->shortcoming)
+                            <div class="comparison-list">
+                                @foreach(explode(PHP_EOL,$cate->shortcoming) as $k=>$v)
+                                    <p class="comparison-item">{{ $v }}</p>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
                 </div>
 
+                @if($cate->options)
+                <div class="suitability">
+                    @foreach($cate->options as $v)
+                    <span class="suitability-title">{{ $v['title'] }}</span>
+                    <span class="suitability-item">{{ $v['content'] }}</span>
+                    @endforeach
+                </div>
+                @endif
+
+                <div class="method-faq">
+                    <p class="method-faq-title">{{ $cate->name }}常見疑問</p>
+                    @foreach($cate->faqs as $key=>$faq)
+                        @if($key<3)
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                <span class="question-text">Q：{{ $faq->questions }}</span>
+                                <i class="iconfont faq-icon">&#xeca2;</i>
+                            </div>
+                            <p class="faq-answer">A：{{ $faq->answers }}</p>
+                        </div>
+                        @endif
+                    @endforeach
+
+                </div>
+            </div>
+
+            <img class="method-pic" src="{{ asset('uploads/'.$cate->image) }}" alt="">
+        </div>
+
+        <div class="method-articles">
+            <p class="method-articles-title">延伸閱讀：{{ $cate->name }}推薦文章</p>
+
+            <div class="articles-list">
+            @foreach($cate->article as $key=>$item)
+                @if($key<3)
+                <div class="articles-item">
+                    <a href="{{ url('news/'.$item->id) }}">
+                        <img src="{{ asset('uploads/'.$item->img) }}" alt="{{ $item->title }}">
+                        <p class="articles-title">{{ $item->title }}</p>
+                    </a>
+                </div>
+                @endif
+            @endforeach
             </div>
 
         </div>
+    </div>
+    @endforeach
 
-    </section>
+    <div class="compare wrapper column">
+        <h2 class="main-title">減肥方式比較</h2>
+        <p class="title-sub">{{ app('cache.config')->get('compare_desc') }}</p>
+        <div class="compare-wrapper">
+            <div class="compare-head">
+                <div class="compare-item">
+                    <p class="compare-item-title">減肥方式</p>
+                    <p class="compare-item-content">飲食減肥</p>
+                    <p class="compare-item-content">運動減肥</p>
+                    <p class="compare-item-content">手術減肥</p>
+                    <p class="compare-item-content">藥物減肥</p>
+                </div>
+            </div>
+            <div class="compare-body">
+                @foreach(configToArray(app('cache.config')->get('compare')) as $v)
+                    <div class="compare-item">
+                        <p class="compare-item-title">{{ $v['text'] }}</p>
+                        <p class="compare-item-content">{{ $v['diet'] }}</p>
+                        <p class="compare-item-content">{{ $v['sports'] }}</p>
+                        <p class="compare-item-content">{{ $v['operation'] }}</p>
+                        <p class="compare-item-content">{{ $v['drug'] }}</p>
+                    </div>
+                @endforeach
+            </div>
+        </div>
 
+    </div>
 
-    <section class="about-section" data-track-section="about" data-track-section-view data-track-section-label="全球销量">
-        <div class="wrapper about">
-            <div class="row ab-main wow animate__animated animate__fadeInUp"  >
-                <h1 class="ab-title">{!! app('cache.config')->get('home_about_title') !!}</h1>
-                <p class="sub">WHAT IS XENICAL</p>
+    <div class="about wrapper column">
+        <div class="wow animate__animated animate__fadeInUp">
+            <h2 class="main-title">{!! app('cache.config')->get('home_about_title') !!}</h2>
+            <div class="title-sub">{!! app('cache.config')->get('home_about') !!}</div>
+            <div class="xl-main">
+                <p class="xl-title">上市至今累計銷量突破</p>
                 <div class="text">
-                    {!! app('cache.config')->get('home_about') !!}
+                    <span class="num" id="use-num">25,000,000</span><span class="em">盒</span>
                 </div>
             </div>
-            <div class="row xl-main wow animate__animated animate__fadeInUp">
-                <h2 class="xl-title">銷量突破</h2>
-                <div class="text" >
-                    <span class="num" id="use-num">100,000</span><span class="em" >萬億顆<br>以上</span>
-                </div>
-            </div>
+            <a class="go-btn btn-ef1" href="/xenical">查看羅氏鮮詳細介紹<i class="iconfont">&#xe684;</i></a>
         </div>
-    </section>
-
-    <section class="suit" data-track-section="suit" data-track-section-view data-track-section-label="适用对象">
-        <div class="wrapper">
-            <div class="suit-head wow animate__animated animate__fadeInUp" >
-                <h2 class="title">適用族群</h2>
+        <div class="suit-sec">
+            <div class="suit">
+                <p class="main-title wow animate__animated animate__fadeInUp">{!! app('cache.config')->get('home_about_title2') !!}</p>
+                <div class="title-sub wow animate__animated animate__fadeInUp">{!! app('cache.config')->get('home_about2') !!}</div>
             </div>
             <div class="suit-content wow animate__animated animate__fadeInUp">
-                @php
-                    $people_key=0;
-                @endphp
                 @foreach($for_people as $key=>$item)
-                <div class="item" data-parallax='{"y": {{ $people_key%2==0?'-':'' }}100}'>
-                    <div class="box">
-                        <img src="{{ asset('uploads/'.($item->img ?? '')) }}" alt="{{ $item->text ?? '' }}" loading="lazy" decoding="async">
-                    </div>
-                    <p class="text">{{ $item->text }}</p>
-                </div>
                     @php
-                        $people_key++;
+                        $people_key = $key+1;
+                        if(is_mobile()){
+                            if($people_key%3==1){
+                               $y = '-80';
+                            }elseif ($people_key%3==2){
+                               $y = '50';
+                            }else{
+                                $y = '-30';
+                            }
+
+                        }else{
+                            $y = $people_key%2==0?'-100':'100';
+                        }
                     @endphp
+                    <div class="item" data-parallax='{"y": {{ $y }}}'>
+                        <img src="{{ asset('uploads/'.$item->img) }}" alt="{{ $item->text }}">
+                        <p class="text">{{ $item->text }}</p>
+                    </div>
+
                 @endforeach
             </div>
         </div>
-    </section>
-
-    <section class="how" data-track-section="how" data-track-section-view data-track-section-label="作用原理">
-        <div class="wrapper">
-            <div class="modal wow animate__animated animate__fadeInUp">
-                <h2 class="title">羅氏鮮作用機轉</h2>
-                <p class="sub">HOW TO WORK</p>
-            </div>
-            <div class="how-body">
-                <div class="how-resolve">
-                    <div class="picker appear-1">
-                        <span class="min-zf left-more" style="left: 182px;top: 122px;"></span>
-                        <span class="min-zf left-more" style="left: 195px;top: 186px;"></span>
-                        <span class="min-zf right-more" style="right: 134px;top: 93px;"></span>
-                        <span class="min-zf right-more" style="right: 124px;top: 138px;"></span>
-
-                    </div>
-                    <div class="introduce appear-2">
-                        {!! app('cache.config')->get('how_to_work_1') !!}
-                    </div>
-                </div>
-
-                <div class="how-resolve restrain ">
-                    <div class="picker appear-3">
-                        <span class="max-zf bottom-more" style="bottom: 108px;left: 236px"></span>
-                    </div>
-                    <div class="introduce appear-4">
-                        {!! app('cache.config')->get('how_to_work_2') !!}
-                    </div>
-                </div>
-
-            </div>
+    </div>
+    <div class="product wrapper column">
+        <div class="buy">
+            <h2 class="main-title wow animate__animated animate__fadeInUp" id="product-title">線上訂購羅氏鮮</h2>
+            <p class="title-sub wow animate__animated animate__fadeInUp">{!! app('cache.config')->get('home_product_desc') !!}</p>
         </div>
-        <div class="decorate de-1"></div>
-        <div class="decorate de-2"></div>
-    </section>
-
-    <section class="product" data-track-section="product" data-track-section-view data-track-section-label="商品方案">
-        <div class="wrapper">
-            <div class="modal wow animate__animated animate__fadeInUp">
-                <h2 class="title">如何訂購羅氏鮮</h2>
-                <p class="sub">HOW TO BUY</p>
-            </div>
-            <div class="product-body">
-                <div class="shop">
-                    <div class="introduce order wow animate__animated animate__fadeInUp">
-                        <p class="title">線上通路</p>
-                        <p class="desc">
-                            台灣羅氏鮮官方線上訂購<br>
-                            <span style="background-color: #ffebd9">無須醫師處方箋</span>，歐洲原裝進口<br>
-                            訂購組合懶人包可享受超值優惠
-                        </p>
-                        <img class="shop-img" src="{{ asset('static/img/shop2.webp') }}" alt="羅氏鮮" loading="lazy" decoding="async">
-                    </div>
-                    <div class="goods wow animate__animated animate__fadeInUp">
-                        @foreach($products as $key=>$item)
-
-                            <div class="item">
-                                <p class="title">羅氏鮮{{ $item->sub_name }}</p>
-                                <p class=green-mask>
-                                    <span class="price">NT${{ number_format(round($item->price)) }}</span>
-                                    <span class="box">
-                                        @if($item->market_price-$item->price > 0)
-                                            優惠NT${{ number_format(round($item->market_price-$item->price)) }}
-                                        @else
-                                            官方標準售價
-                                        @endif</span>
-                                </p>
-                                <a class="shop-btn btn-ef2" href="{{ url('checkout/'.$item->id) }}"  data-observer="立即訂購-{{ $item->name }}">立即訂購</a>
-                            </div>
-                        @endforeach
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </section>
-
-
-    <section class="lunbo" data-track-section="lunbo" data-track-section-view data-track-section-label="用户见证">
-        <div class="wrapper" style="">
-            <div class="modal wow animate__animated animate__fadeInUp">
-                <h2 class="title">健康減肥瘦身<br>看看他們怎麼說</h2>
-            </div>
-            @if($trade_show)
-            <div class="lunbo-body wow animate__animated animate__fadeInUp">
-                <div class="evaluate">
-                    @foreach(array_values($trade_show) as $key=>$item)
-                        @if($key>5)
-                            @break
-                        @endif
-
-                        <div class="sef {{ $key==0?"sef-activate":"" }}"><img src="{{ asset_upload($item['img']) }}" alt="{{ isset($item['text'])?$item['text']:'' }}" loading="lazy" decoding="async"></div>
-
-                    @endforeach
-                </div>
-                <div class="switch prev-btn"><a href="javascript:;" onclick="rotate(1)"><i class="iconfont">&#xe779;</i></a></div>
-                <div class="switch next-btn"><a href="javascript:;" onclick="rotate(2)"><i class="iconfont">&#xe775;</i></a></div>
-            </div>
-            @endif
-        </div>
-    </section>
-
-
-    <section class="tdee" data-track-section="tdee" data-track-section-view data-track-section-label="计算器入口">
-        <div class="wrapper" style="">
-            <div class="modal wow animate__animated animate__fadeInUp">
-                <h2 class="title">你瞭解你的身體嗎？</h2>
-
-            </div>
-            <div class="tdee-about  wow animate__animated animate__fadeInUp">
-                {!! str_replace(PHP_EOL,'<br>',app('cache.config')->get('slim_about')) !!}
-            </div>
-            <div class="tdee-body ">
-                <a class="tdee-btn" href="{{ url('compute') }}" data-track-section="tdee" data-track-name="home.tdee.btn" data-observer="測試你的數據按鈕"><span class="text">測試你的數據</span></a>
-            </div>
-        </div>
-
-    </section>
-
-    <section class="timeline" data-track-section="timeline" data-track-section-view data-track-section-label="时间轴">
-        <div class="wrapper" style="">
-            <div class="modal wow animate__animated animate__fadeInUp" id="ts-svg">
-                <h2 class="title">我們致力於解決你的困擾</h2>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 170" preserveAspectRatio="none">
-                    <path d="M7.7,145.6C109,125,299.9,116.2,401,121.3c42.1,2.2,87.6,11.8,87.3,25.7">
-                    </path>
-                </svg>
-            </div>
-        </div>
-        <div class="timeline-body wow animate__animated animate__fadeInUp" id="loopWrap">
-            <div class="group">
-                @foreach($trouble as $item)
+        <div class="goods wow animate__animated animate__fadeInUp">
+            @foreach($products as $key=>$item)
+                @if($key < 6)
                 <div class="item">
-                    <p class="p1">{{ $item->text }}</p>
-                    <p class="p2"><span class="num">{{ $item->number }}</span><span class="unit">{{ $item->unit }}</span></p>
-                </div>
-                @endforeach
-
-            </div>
-        </div>
-    </section>
-
-    <section class="fqa" data-track-section="fqa" data-track-section-view data-track-section-label="FAQ精选">
-        <div class="wrapper" style="">
-            <div class="modal wow animate__animated animate__fadeInUp">
-                <h2 class="title">醫師問答</h2>
-                <p class="sub">Q&A</p>
-            </div>
-            <div class="fqa-body">
-                <div class="question wow animate__animated animate__fadeInUp">
-                    @foreach($faqs as $key=>$faq)
-                        @if($key>5)
-                            @break
-                        @endif
-                    <div class="item question-show">
-                        <p class="q-title">Q：{{ $faq->questions }}</p>
-                        <p class="q-desc">{!! $faq->answers !!}</p>
-                        <i class="q-icon iconfont">&#xe775;</i>
+                    <img class="goods-img" src="{{ asset('uploads/'.$item->img) }}?ver={{ config('app.asset_version') }}" alt="{{ $item->sub_name }} {{ $item->name_en }}{{ $item->name }}{{ $item->quantity }}{{ $item->id == 1 ? '盒標準裝' : '盒優惠裝' }}">
+                    <div class="info">
+                        <div class="goods-title">
+                            <p><span style="letter-spacing: -1px;margin-right: 4px;">{{ $item->name_en }}</span>{{ $item->name }}</p>
+                            <p>{{ $item->quantity }}{{ $item->id == 1 ? '盒標準裝' : '盒優惠裝' }}</p>
+                        </div>
+                        <p class="price-sec">
+                            @php
+                                $diff = $item->market_price - $item->price;
+                                $percent = $item->market_price > 0 ? round(($diff / $item->market_price) * 100) : 0;
+                            @endphp
+                            <span class="price"><span class="twd">NT$</span>{{ number_format(round($item->price)) }}</span>
+                            @if($diff > 0)
+                                <span class="market-price"><span class="twd">NT$</span>{{ number_format($item->market_price) }}</span>
+                            @endif
+                            
+                            <span class="discount">
+                                @if($diff > 0)
+                                    優惠{{ $percent }}%
+                                @else
+                                    官方售價
+                                @endif
+                            </span>
+                        </p>
+                        <div class="btn-sec">
+                            <a class="shop-btn go-btn btn-ef1" href="{{ url('checkout/'.$item->id) }}"  data-observer="立即訂購-{{ $item->name }}">立即訂購<i class="iconfont">&#xe684;</i></a>
+                            <a class="go-info btn-ef2" href="{{ url('product/'.$item->id) }}" data-observer="詳情-{{ $item->name }}">詳情</a>
+                        </div>
                     </div>
-                    @endforeach
                 </div>
-            </div>
+                @endif
+            @endforeach
         </div>
-    </section>
-
-    <section class="epilogue" data-track-section="epilogue" data-track-section-view data-track-section-label="底部CTA">
-        <div class="epilogue-body">
+    </div>
+    <div class="news">
+        <h2 class="main-title wow animate__animated animate__fadeInUp">最新減肥知識分享</h2>
+        <div class="news-main">
             <div class="image-wrap wow animate__animated animate__fadeInUp">
-                <figure class="box epilogue-img" style="background-image: {{ app('cache.config')->get('promote_image') ? 'url('.asset('uploads/'.app('cache.config')->get('promote_image')).')' : '' }}"></figure>
+                <div class="box epilogue-img" style="background-image: url({{ asset('uploads/'.app('cache.config')->get('promote_image')) }})"></div>
             </div>
-            <div class="text" style="opacity: 0"><p class="p1" id="epilogue-p1">這個夏天</p><p class="p2" id="epilogue-p2">你準備好了嗎</p></div>
-            <a class="btn btn-ef1" href="{{ url('product') }}" data-track-section="epilogue" data-track-name="home.epilogue.order_btn" data-observer="立即訂購按鈕">立即訂購</a>
+            <div class="news-wrap">
+                @foreach($news as $item)
+                    <div class="item wow animate__animated animate__fadeInUp">
+                        <a class="info" href="{{ url('news/'.$item->id) }}">
+                            <div class="newsInfoIdxBox">
+                                <p class="newsDateBox">
+                                    <span class="day">{{ $item->release_at->format('d') }}</span>
+                                    <span class="ym">{{ $item->release_at->format('M') }}</span>
+                                </p>
+                                <p class="news-title">{{ $item->title }}</p>
+                            </div>
+                            <p class="sub">
+                                {{ \Illuminate\Support\Str::limit($item->brief?$item->brief:strip_tags($item->content),120) }}
+                            </p>
+                            <span class="go btn-ef1">閱讀全文<i class="iconfont">&#xe684;</i></span>
+                        </a>
+                    </div>
+                @endforeach
+            </div>
         </div>
-    </section>
+    </div>
 @endsection

@@ -8,8 +8,7 @@
 
 @section('script')
     @parent
-    <script src="{{ asset('static/js/xie.js') }}?ver={{ config('app.asset_version') }}"></script>
-    <script src="{{ asset('static/js/api.js') }}?ver={{ config('app.asset_version') }}"></script>
+    <script src="{{ asset('static/js/api.js') }}"></script>
     <script>
 
         setInterval(function(){
@@ -21,7 +20,7 @@
 
         },1000);
         function messageVerify(){
-            var name = $("input[name='name']").val();
+            var name = $("input[name='name").val();
             var phone = $("input[name='phone']").val();
             var email = $("input[name='email']").val();
             var content = $("textarea[name='content']").val();
@@ -47,9 +46,26 @@
         }
     </script>
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const bgEl = document.getElementById("bg-container");
+            const pcBg = bgEl.dataset.bgPc;
+            const mBg = bgEl.dataset.bgM;
+
+            function updateBackground() {
+            const bgUrl = window.innerWidth > 1024 ? pcBg : mBg;
+            bgEl.style.backgroundImage = `url('${bgUrl}')`;
+            }
+
+            updateBackground();
+
+            window.addEventListener('resize', function () {
+            updateBackground();
+            });
+        });
+    </script>
+    <script>
         bgHeight()
         function bgHeight(){
-            $('.container-bg').css('height',$(window).height()-80);
 
         }
         window.onresize = function(){
@@ -67,112 +83,70 @@
             let banner_height = $('.container-bg').height()-60;
             let opacity = 1-top/banner_height;
             $('.container-bg').css('opacity',opacity);
-            if(opacity<=0.6){
-                $('.page-title').css('color','rgba(0,0,0,'+top/banner_height+')');
-            }else{
-                $('.page-title').css('color','#fff');
-            }
-
-            if(($(window).scrollTop() + $(window).height()).toFixed(0) == $(document).height()){
-                $('.container-bg').css('opacity',0);
-            }
-
-
         }
-
-        $('.fqa li').each(function(){
-            var height = $(this).find('.answers').innerHeight();
-            $(this).css('--_height',height+'px');
-
-        });
-        $('.fqa li').click(function(){
-            if($(this).hasClass('show')){
-                $(this).removeClass('show');
-            }else{
-                $(this).addClass('show');
-            }
-        })
     </script>
 
 @stop
 
-
 @section('content')
-
-<section class="message-container" data-track-section="message" data-track-section-view data-track-section-label="取得協助">
-    <div class="container-bg" style="background-image: url('{{ asset_upload(app('cache.config')->get('page_message_back_img_pc')) }}')">
-        <p class="bg-text">{!! app('cache.config')->get('page_message_title') !!}</p>
-        <p class="beat"><i class="iconfont">&#xe784;</i></p>
+    <div id="bg-container" class="container-bg"
+        data-bg-pc="{{ asset_upload(app('cache.config')->get('page_message_back_img_pc')) }}"
+        data-bg-m="{{ asset_upload(app('cache.config')->get('page_message_back_img')) }}">
     </div>
-    <div class="page-main">
-        <h1 class="page-title">取得協助</h1>
-    </div>
-    <div class="side">
-        <div class="left-side">
-            <div class="head">
-                <p class="title">快速協助</p>
-                <p class="desc">
-                    {!! app('cache.config')->get('page_message_desc') !!}
-                </p>
-            </div>
-            <div class="body">
-                <ul class="fqa">
-                    @foreach($faqs as $item)
-                        <li>
-                            <p class="questions"><a href="javascript:;">Q：{{ $item->questions }}</a></p>
-                            <p class="answers">{{ $item->answers }}</p>
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
-        </div>
-        <div class="right-side">
-            <div class="head">
-                <p class="title">聯絡我們</p>
-                <p class="desc">
-                    {!! app('cache.config')->get('page_lianluo_desc') !!}
-                </p>
-            </div>
-            <div class="body">
-                <form action="" method="post" onsubmit="return messageStore()" id="message-form">
-                    {{ csrf_field() }}
-                    <div class="form-main">
-                        <div class="form-group">
-                            <label>你的稱呼：</label>
-                            <input class="form-control" type="text" name="name" placeholder="請輸入你的稱呼">
-                        </div>
-                        <div class="form-group">
-                            <label>聯絡電話：</label>
-                            <input class="form-control" type="tel" name="phone" placeholder="請輸入聯絡你的電話號碼" maxlength="10" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
-                        </div>
-                        <div class="form-group">
-                            <label>電子信箱：</label>
-                            <input class="form-control" type="text" name="email" placeholder="請輸入聯絡你的電子信箱">
-                        </div>
-                        <div class="form-group">
-                            <label>協助類型：</label>
-                            <select class="form-control" name="type">
-                                <option value="1">療程咨詢</option>
-                                <option value="2">退換貨</option>
-                                <option value="3">修改訂單資訊</option>
-                                <option value="4">修改/新增訂單備注</option>
-                                <option value="5">意見或建議</option>
-                                <option value="0" selected>其他</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>問題詳述：</label>
-                            <textarea class="form-control form-textarea" name="content" id="" cols="30" rows="10"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <button class="form-btn" type="submit" data-track-section="message" data-track-name="message.submit" data-observer="留言提交">確認送出</button>
-                        </div>
+    <h1 class="main-title page-title">{!! app('cache.config')->get('page_message_title') !!}</h1>
+    <div class="main">
+        <section class="quick">
+            <h2 class="title">快速協助</h2>
+            <p class="desc">{!! app('cache.config')->get('page_message_desc') !!}</p>
+            @foreach($faqs as $item)
+                <details class="faq-item" open>
+                    <summary class="faq-question">
+                        <span class="question-text">Q：{{ $item->questions }}</span>
+                        <i class="iconfont faq-icon">&#xeca2;</i>
+                    </summary>
+                    <p class="faq-answer">A：{{ $item->answers }}</p>
+                </details>
+            @endforeach
+        </section>
+        <section class="contact">
+            <h2 class="title">聯絡我們</h2>
+            <p class="desc">{!! app('cache.config')->get('page_lianluo_desc') !!}</p>
+            <form action="" method="post" onsubmit="return messageStore()" id="message-form">
+                {{ csrf_field() }}
+                <div class="form-main">
+                    <div class="form-group">
+                        <label for="name">你的稱呼：</label>
+                        <input class="form-control" type="text" id="name" name="name" autocomplete="name" placeholder="請留下你的稱呼" required>
                     </div>
-                </form>
-
-            </div>
-        </div>
+                    <div class="form-group">
+                        <label for="phone">聯絡電話：</label>
+                        <input class="form-control" type="tel" id="phone" name="phone" autocomplete="tel" placeholder="請留下你的電話號碼" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">電子郵箱：</label>
+                        <input class="form-control" type="text" id="email" name="email" autocomplete="email" placeholder="請留下你的電子郵箱" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="type">協助類型：</label>
+                        <select class="form-control" id="type" name="type">
+                            <option value="1">療程咨詢</option>
+                            <option value="2">退換貨</option>
+                            <option value="3">修改訂單信息</option>
+                            <option value="4">修改/新增訂單備注</option>
+                            <option value="5">意見或建議</option>
+                            <option value="0" selected>其它</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="content">問題詳述：</label>
+                        <textarea class="form-control form-textarea" id="content" name="content" cols="30" rows="10"></textarea>
+                    </div>
+                    <button class="form-btn">確認送出</button>
+                </div>
+            </form>
+        </section>
     </div>
-</section>
+@endsection
+@section('breadcrumb')
+    <li class="active">取得協助</li>
 @endsection

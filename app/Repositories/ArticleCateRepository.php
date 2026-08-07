@@ -5,6 +5,7 @@ namespace App\Repositories;
 
 
 
+
 use App\Models\ArticleCate;
 
 class ArticleCateRepository extends Repository
@@ -15,7 +16,7 @@ class ArticleCateRepository extends Repository
     public function getAll(){
 
         return $this->cache(config('global.cache.article_cate'),function (){
-            return $this->model()->where('status',1)->orderBy('sort','desc')->get();
+            return $this->model()->where('status',1)->orderBy('sort')->get();
         });
 
     }

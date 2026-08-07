@@ -2,8 +2,6 @@
 
 namespace App\Providers;
 
-use App\Http\Composers\LayoutComposer;
-use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 class ComposerServiceProvider extends ServiceProvider
 {
@@ -24,10 +22,8 @@ class ComposerServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        View::share('period', LayoutComposer::morningPeriod());
-
         view()->composer(
-            ['web.layout','mobile.layout','web.layout.layout'],     //模板名
+            ['web.layout','mobile.layout'],     //模板名
             'App\Http\Composers\LayoutComposer@all'    //方法名或者类中的方法
         );
 

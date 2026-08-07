@@ -27,20 +27,20 @@ class NewRepository extends Repository
 
 
     public function getNextArticle($id,$cate_id){
-        $next_article = $this->model()->where('article_cate_id',$cate_id)->where('status',1)->where('id','>',$id)->orderBy('id','asc')->first();
+        $next_article = $this->model()->where('article_cate_id',$cate_id)->where('id','>',$id)->where('status',1)->orderBy('id','asc')->first();
 
         if(!$next_article){
-            $next_article = $this->model()->where('article_cate_id',$cate_id)->where('status',1)->where('id','<',$id)->orderBy('id','asc')->first();
+            $next_article = $this->model()->where('article_cate_id',$cate_id)->where('id','<',$id)->where('status',1)->orderBy('id','asc')->first();
         }
         return $next_article;
     }
 
     public function getPrevArticle($id,$cate_id){
-        $prev_article = $this->model()->where('article_cate_id',$cate_id)->where('status',1)->where('id','<',$id)->orderBy('id','desc')->first();
+        $prev_article = $this->model()->where('article_cate_id',$cate_id)->where('id','<',$id)->where('status',1)->orderBy('id','desc')->first();
 
         if(!$prev_article){
 
-            $prev_article = $this->model()->where('article_cate_id',$cate_id)->where('status',1)->where('id','>',$id)->orderBy('id','desc')->first();
+            $prev_article = $this->model()->where('article_cate_id',$cate_id)->where('id','>',$id)->where('status',1)->orderBy('id','desc')->first();
         }
 
         return $prev_article;
