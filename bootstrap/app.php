@@ -11,6 +11,14 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->trustProxies(
+            at: '*',
+            headers: \Symfony\Component\HttpFoundation\Request::HEADER_X_FORWARDED_FOR |
+                \Symfony\Component\HttpFoundation\Request::HEADER_X_FORWARDED_HOST |
+                \Symfony\Component\HttpFoundation\Request::HEADER_X_FORWARDED_PROTO |
+                \Symfony\Component\HttpFoundation\Request::HEADER_X_FORWARDED_PORT
+        );
+
         $middleware->alias([
             'defend' => \App\Http\Middleware\DefendMiddleware::class,
             'redirect.device' => \App\Http\Middleware\RedirectDeviceMiddleware::class,
