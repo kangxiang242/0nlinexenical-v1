@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>管理員登入 - xenicalofficial</title>
+    <title>管理員登入</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -56,7 +56,7 @@
 </head>
 <body>
     <div class="login-card">
-        <h1>xenicalofficial</h1>
+        <h1>{{ config('app.name', '管理員') }}</h1>
         <p class="subtitle">管理員登入</p>
         @if(session('status'))
             <div class="logout-msg">{{ session('status') }}</div>
