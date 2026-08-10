@@ -25,6 +25,14 @@ Route::get('/area/shop', [AreaController::class, 'getShop']);
 Route::get('/robots.txt', [ApiController::class, 'robots']);
 Route::get('/sitemap.xml', [ApiController::class, 'sitemap']);
 Route::post('/observer/store', [ObserverController::class, 'store']);
+
+// Admin login routes (POST login handled by Admin\LoginController)
+Route::prefix(env('ADMIN_PATH', 'ami3-17drt4-6ne634russ'))->group(function () {
+    Route::post('/login', [\App\Http\Controllers\Admin\LoginController::class, 'login'])
+        ->name('admin.login.submit');
+    Route::post('/logout', [\App\Http\Controllers\Admin\LoginController::class, 'logout'])
+        ->name('filament.' . env('ADMIN_PATH', 'ami3-17drt4-6ne634russ') . '.auth.logout');
+});
 Route::get('/area/city', [AreaController::class, 'getCity']);
 Route::get('/area/county', [AreaController::class, 'getCounty']);
 Route::get('/area/road', [AreaController::class, 'getRoad']);

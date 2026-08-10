@@ -2,56 +2,81 @@
 
 namespace App\Filament\Pages\Auth;
 
-use Filament\Forms\Components\Component;
-use Filament\Forms\Components\TextInput;
+use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
+use Filament\Facades\Filament;
+use Filament\Http\Responses\Auth\Contracts\LoginResponse;
+use Filament\Models\Contracts\FilamentUser;
 use Filament\Pages\Auth\Login as BaseLogin;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Component;
+use Filament\Forms\Form;
+use Illuminate\Validation\ValidationException;
 
 class Login extends BaseLogin
 {
-    protected function getForms(): array
+    public function form(Form $form): Form
     {
-        return [
-            'form' => $this->form(
-                $this->makeForm()
-                    ->schema([
-                        $this->getLoginFormComponent(),
-                        $this->getPasswordFormComponent(),
-                        $this->getRememberFormComponent(),
-                    ])
-                    ->statePath('data'),
-            ),
-        ];
+        return $form
+            ->schema([
+                $this->getLoginFormComponent(),
+                $this->getPasswordFormComponent(),
+                $this->getRememberFormComponent(),
+            ])
+            ->statePath('data');
     }
 
     protected function getLoginFormComponent(): Component
     {
         return TextInput::make('login')
-            ->label(__('filament-panels::pages/auth/login.form.email.label'))
-            ->placeholder(__('filament-panels::pages/auth/login.form.email.placeholder'))
+            ->label('账号')
+            ->placeholder('请输入账号')
             ->required()
             ->autocomplete(false)
-            ->extraAttributes([
-                'autocomplete' => 'off',
-                'readonly' => 'readonly',
-                'onfocus' => 'this.removeAttribute(\'readonly\')',
-            ])
-            ->extraInputAttributes([
-                'class' => 'login-field',
-            ])
-            ->autofocus();
+            ->extraInputAttributes(['tabindex' => 1]);
     }
 
-    protected function getPasswordFormComponent(): Component
+    public function authenticate(): ?LoginResponse
     {
-        return TextInput::make('password')
-            ->label(__('filament-panels::pages/auth/login.form.password.label'))
-            ->placeholder(__('filament-panels::pages/auth/login.form.password.placeholder'))
-            ->password()
-            ->revealable(filament()->arePasswordsRevealable())
-            ->required()
-            ->autocomplete('new-password')
-            ->extraAttributes([
-                'autocomplete' => 'new-password',
-            ]);
+        try {
+            $this->rateLimit(60);
+        } catch (TooManyRequestsException $exception) {
+            $this->getRateLimitedNotification($exception)?->send();
+
+            return null;
+        }
+
+        $data = $this->form->getState();
+
+        if (! Filament::auth()->attempt($this->getCredentialsFromFormData($data), $data['remember'] ?? false)) {
+            $this->throwFailureValidationException();
+        }
+
+        $user = Filament::auth()->user();
+
+        if (
+            ($user instanceof FilamentUser) &&
+            (! $user->canAccessPanel(Filament::getCurrentPanel()))
+        ) {
+            Filament::auth()->logout();
+
+            $this->throwFailureValidationException();
+        }
+
+        return app(LoginResponse::class);
+    }
+
+    protected function throwFailureValidationException(): never
+    {
+        throw ValidationException::withMessages([
+            'data.login' => '账号或密码错误',
+        ]);
+    }
+
+    protected function getCredentialsFromFormData(array $data): array
+    {
+        return [
+            'name' => $data['login'],
+            'password' => $data['password'],
+        ];
     }
 }
