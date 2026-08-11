@@ -3,17 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Filament\Facades\Filament;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Session;
 
 class LoginController extends Controller
 {
     protected function dashboardUrl()
     {
         $panel = Filament::getCurrentPanel();
-        // 优先用 dashboard 路由生成 URL
         $routeName = $panel->getId() . '.pages.dashboard';
         if (Route::has('filament.' . $routeName)) {
             return route('filament.' . $routeName);
@@ -37,12 +37,11 @@ class LoginController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        if (Filament::auth()->attempt([
-            'name' => $credentials['login'],
-            'password' => $credentials['password'],
-        ], $request->boolean('remember'))) {
-
-            Session::save();
+        // 标准方式登录：查询用户 + 验证密码 + 写入 session
+        $user = User::where('name', $credentials['login'])->first();
+        if ($user && Hash::check($credentials['password'], $user->password)) {
+            Filament::auth()->login($user, $request->boolean('remember'));
+            $request->session()->regenerate();
 
             return redirect()->intended($this->dashboardUrl());
         }
