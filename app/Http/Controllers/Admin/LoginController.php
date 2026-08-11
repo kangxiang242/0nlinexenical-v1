@@ -5,14 +5,26 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Filament\Facades\Filament;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 
 class LoginController extends Controller
 {
+    protected function dashboardUrl()
+    {
+        $panel = Filament::getCurrentPanel();
+        // 优先用 dashboard 路由生成 URL
+        $routeName = $panel->getId() . '.pages.dashboard';
+        if (Route::has('filament.' . $routeName)) {
+            return route('filament.' . $routeName);
+        }
+        return $panel->getUrl();
+    }
+
     public function showLoginForm()
     {
         if (Filament::auth()->check()) {
-            return redirect(Filament::getCurrentPanel()->getPath());
+            return redirect($this->dashboardUrl());
         }
 
         return view('admin.login');
@@ -30,11 +42,9 @@ class LoginController extends Controller
             'password' => $credentials['password'],
         ], $request->boolean('remember'))) {
 
-            // Session has been migrated by SessionGuard::updateSession()
-            // New session ID handled by the 302 redirect naturally
             Session::save();
 
-            return redirect()->intended(Filament::getCurrentPanel()->getPath());
+            return redirect()->intended($this->dashboardUrl());
         }
 
         return back()->withErrors([
@@ -48,6 +58,6 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect(Filament::getCurrentPanel()->getPath() . '/login');
+        return redirect($this->dashboardUrl() . '/login');
     }
 }
