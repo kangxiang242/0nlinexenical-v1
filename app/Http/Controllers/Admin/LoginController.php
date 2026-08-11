@@ -8,6 +8,7 @@ use Filament\Facades\Filament;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
 
 class LoginController extends Controller
 {
@@ -37,11 +38,11 @@ class LoginController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        // 标准方式登录：查询用户 + 验证密码 + 写入 session
         $user = User::where('name', $credentials['login'])->first();
         if ($user && Hash::check($credentials['password'], $user->password)) {
-            Filament::auth()->login($user, $request->boolean('remember'));
-            $request->session()->regenerate();
+            // 标准 Laravel 登录（内部处理 session migrate + 保存 user id）
+            auth()->guard('web')->login($user, $request->boolean('remember'));
+            $request->session()->save();
 
             return redirect()->intended($this->dashboardUrl());
         }
