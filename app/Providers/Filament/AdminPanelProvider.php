@@ -28,6 +28,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id($adminPath)
             ->path($adminPath)
+            ->domain(env('ADMIN_ROUTE_DOMAIN'))
             ->login(\App\Filament\Pages\Auth\Login::class)
             ->passwordReset()
             ->brandName(config('app.name'))
