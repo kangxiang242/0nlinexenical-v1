@@ -135,7 +135,7 @@
                                 <label class="shut" for="name">請問如何稱呼您</label>
                             </div>
                             <div class="form-group">
-                                <input class="form-control" type="tel" name="phone" id="phone">
+                                <input class="form-control" type="tel" name="phone" id="phone" maxlength="10" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'')" pattern="^09\d{8}$" title="請輸入09開頭的10位數字">
                                 <label class="shut" for="phone">請留下您收貨時使用的電話號碼</label>
                             </div>
                             <div class="form-group">
