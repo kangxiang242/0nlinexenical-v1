@@ -499,9 +499,9 @@
 
         function logo_compose(type,opacity){
             if(type == 1){
-                $('.logo-img').attr('src','/static/img/mlogo1.webp?ver=1')
+                $('.logo-img').attr('src','/static/img/m.logo1.png?ver=1')
             }else{
-                $('.logo-img').attr('src','/static/img/mlogo2.webp?ver=1')
+                $('.logo-img').attr('src','/static/img/m.logo2.png?ver=1')
             }
         }
 
@@ -609,7 +609,7 @@
                 <div class="progress"></div>
             </div>
             <div class="slogan-wrap">
-                <div class="back-img"><img src="{{ asset('static/img/ellipse.webp') }}" alt="" loading="lazy" decoding="async"></div>
+                <div class="back-img"><img src="{{ asset('static/img/ellipse.jpg') }}" alt="" loading="lazy" decoding="async"></div>
                 <p class="text" id="slogan-text"> 妳滿意現在的身材嗎？</p>
             </div>
         </div>
@@ -705,7 +705,7 @@
                         訂購組合懶人包可享受超值優惠
                     </p>
                 </div>
-                <div class="shop-back"><img src="{{ asset('static/img/shop2.webp') }}" alt="線上訂購" loading="lazy" decoding="async"></div>
+                <div class="shop-back"><img src="{{ asset('static/img/shop2.png') }}" alt="線上訂購" loading="lazy" decoding="async"></div>
             </div>
 
             <div class="product wow animate__animated animate__fadeInUp">

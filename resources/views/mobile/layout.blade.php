@@ -130,7 +130,7 @@
     <header>
         <div class="logo-wrap">
             <a href="{{ url('/') }}">
-                <img class="logo-img" src="{{ asset('static/img/m.logo2.webp') }}?ver={{ config('app.asset_version') }}" alt="logo" decoding="async">
+                <img class="logo-img" src="{{ asset('static/img/m.logo2.png') }}?ver={{ config('app.asset_version') }}" alt="logo" decoding="async">
             </a>
         </div>
         <div class="right-wrap">
@@ -327,14 +327,14 @@
 
         <div class="description">
             <div class="partner">
-                <div class="icon"><img  style="width: 12.6rem" src="{{ asset('static/img/fdausa.webp') }}" alt="fda-usa" loading="lazy" decoding="async"></div>
-                <div class="icon"><img style="width: 15.2rem" src="{{ asset('static/img/ema.webp') }}" alt="ema" loading="lazy" decoding="async"></div>
+                <div class="icon"><img  style="width: 12.6rem" src="{{ asset('static/img/fdausa.png') }}" alt="fda-usa" loading="lazy" decoding="async"></div>
+                <div class="icon"><img style="width: 15.2rem" src="{{ asset('static/img/ema.png') }}" alt="ema" loading="lazy" decoding="async"></div>
                 <!-- <div class="icon"><img  style="width: 14.5rem" src="{{ asset('static/img/fdataiwan.png') }}" alt="台湾fda" loading="lazy" decoding="async"></div> -->
-                <div class="icon"><img  style="width: 5rem" src="{{ asset('static/img/ROCHE.webp') }}" alt="ROCHE" loading="lazy" decoding="async"></div>
-                <div class="icon"><img  style="width: 12rem" src="{{ asset('static/img/CHEPLA.webp') }}" alt="CHEPLA" loading="lazy" decoding="async"></div>
+                <div class="icon"><img  style="width: 5rem" src="{{ asset('static/img/ROCHE.png') }}" alt="ROCHE" loading="lazy" decoding="async"></div>
+                <div class="icon"><img  style="width: 12rem" src="{{ asset('static/img/CHEPLA.png') }}" alt="CHEPLA" loading="lazy" decoding="async"></div>
                 <!-- <div class="icon"><img  style="width: 12.2rem" src="{{ asset('static/img/heimao.png') }}" alt="黑猫宅急便" loading="lazy" decoding="async"></div>
                 <div class="icon"><img  style="width: 2.6rem" src="{{ asset('static/img/7-11.png') }}" alt="7-11" loading="lazy" decoding="async"></div> -->
-                <div class="icon"><img style="width: 5.2rem" src="{{ asset('static/img/ssl.webp') }}" alt="ssl" loading="lazy" decoding="async"></div>
+                <div class="icon"><img style="width: 5.2rem" src="{{ asset('static/img/ssl.png') }}" alt="ssl" loading="lazy" decoding="async"></div>
             </div>
             <p class="copyright">{!! app('cache.config')->get('copyright') !!}</p>
         </div>
