@@ -102,9 +102,11 @@
                     var cleaned = initialHtml;
                     try {
                         var doc = new DOMParser().parseFromString(initialHtml, 'text/html');
-                        doc.querySelectorAll('[style]').forEach(function (el) { el.removeAttribute('style'); });
-                        doc.querySelectorAll('[class]').forEach(function (el) { el.removeAttribute('class'); });
-                        cleaned = doc.body.innerHTML || '<p><br></p>';
+                        doc.querySelectorAll('script,style,xml,o\:p,o\:p,o\:fld').forEach(function (el) { el.remove(); });
+                        // 移除 Office 样式/类后，若仍有无法解析的结构则降为纯文本段落
+                        var text = (doc.body.textContent || '').replace(/\u00a0/g, ' ').trim();
+                        var lines = text.split(/\n+/).map(function (l) { return l.trim(); }).filter(Boolean);
+                        cleaned = lines.length ? lines.map(function (l) { return '<p>' + l + '</p>'; }).join('') : '<p><br></p>';
                     } catch (e2) {
                         cleaned = '<p><br></p>';
                     }
