@@ -108,20 +108,37 @@
                     } catch (e2) {
                         cleaned = '<p><br></p>';
                     }
-                    editor = createEditor({
-                        selector: '#{{ $htmlId }}-ed',
-                        html: cleaned,
-                        config: config,
+                    try {
+                        editor = createEditor({
+                            selector: '#{{ $htmlId }}-ed',
+                            html: cleaned,
+                            config: config,
+                            mode: '{{ $mode }}',
+                        });
+                    } catch (e3) {
+                        editor = null;
+                    }
+                }
+
+                if (!editor) {
+                    // 最终兜底：显示 textarea 编辑原始 HTML
+                    var ed = document.getElementById('{{ $htmlId }}-ed');
+                    var ta = document.createElement('textarea');
+                    ta.className = 'we-code-textarea';
+                    ta.value = initialHtml;
+                    ed.appendChild(ta);
+                    ta.addEventListener('input', function () {
+                        var h2 = document.getElementById('{{ $htmlId }}-h');
+                        if (h2) h2.value = ta.value;
+                    });
+                } else {
+                    createToolbar({
+                        editor: editor,
+                        selector: '#{{ $htmlId }}-tb',
+                        config: {},
                         mode: '{{ $mode }}',
                     });
                 }
-
-                createToolbar({
-                    editor: editor,
-                    selector: '#{{ $htmlId }}-tb',
-                    config: {},
-                    mode: '{{ $mode }}',
-                });
 
                 // 原始码切换按钮（放在工具栏末尾）
                 setTimeout(function() {
