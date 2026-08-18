@@ -23,6 +23,8 @@ class MessageResource extends Resource
     protected static ?int $navigationSort = 6;
 
     protected static ?string $navigationLabel = '留言管理';
+    protected static ?string $modelLabel = '留言';
+    protected static ?string $pluralModelLabel = '留言管理';
 
     public static function getNavigationLabel(): string
     {

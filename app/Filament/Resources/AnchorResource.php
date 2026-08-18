@@ -21,6 +21,8 @@ class AnchorResource extends Resource
     protected static ?int $navigationSort = 11;
 
     protected static ?string $navigationLabel = '錨點管理';
+    protected static ?string $modelLabel = '錨點';
+    protected static ?string $pluralModelLabel = '錨點管理';
 
     public static function getNavigationLabel(): string
     {

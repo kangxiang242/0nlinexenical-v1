@@ -21,6 +21,8 @@ class BannerResource extends Resource
     protected static ?int $navigationSort = 5;
 
     protected static ?string $navigationLabel = '橫幅管理';
+    protected static ?string $modelLabel = '橫幅';
+    protected static ?string $pluralModelLabel = '橫幅管理';
 
     public static function getNavigationLabel(): string
     {
@@ -84,10 +86,10 @@ class BannerResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('img')
+                Tables\Columns\TextColumn::make('img')
                     ->label('圖片')
-                    ->circular()
-                    ->size(50),
+                    ->html()
+                    ->formatStateUsing(fn ($record) => $record->img ? '<img src="' . asset('uploads/' . $record->img) . '" style="width:50px;height:50px;border-radius:50%;object-fit:cover" />' : ''),
                 Tables\Columns\TextColumn::make('name')
                     ->label('名稱')
                     ->searchable()

@@ -21,6 +21,8 @@ class ArticleCateResource extends Resource
     protected static ?int $navigationSort = 4;
 
     protected static ?string $navigationLabel = '文章分類';
+    protected static ?string $modelLabel = '文章分類';
+    protected static ?string $pluralModelLabel = '文章分類';
 
     public static function getNavigationLabel(): string
     {

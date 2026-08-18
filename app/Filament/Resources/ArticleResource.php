@@ -22,6 +22,8 @@ class ArticleResource extends Resource
     protected static ?int $navigationSort = 3;
 
     protected static ?string $navigationLabel = '文章管理';
+    protected static ?string $modelLabel = '文章';
+    protected static ?string $pluralModelLabel = '文章管理';
 
     public static function getNavigationLabel(): string
     {
@@ -110,10 +112,10 @@ class ArticleResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('img')
+                Tables\Columns\TextColumn::make('img')
                     ->label('圖片')
-                    ->circular()
-                    ->size(40),
+                    ->html()
+                    ->formatStateUsing(fn ($record) => $record->img ? '<img src="' . asset('uploads/' . $record->img) . '" style="width:40px;height:40px;border-radius:50%;object-fit:cover" />' : ''),
                 Tables\Columns\TextColumn::make('title')
                     ->label('標題')
                     ->searchable()

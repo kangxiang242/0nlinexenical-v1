@@ -21,6 +21,8 @@ class SeoResource extends Resource
     protected static ?int $navigationSort = 7;
 
     protected static ?string $navigationLabel = 'SEO管理';
+    protected static ?string $modelLabel = 'SEO';
+    protected static ?string $pluralModelLabel = 'SEO管理';
 
     public static function getNavigationLabel(): string
     {

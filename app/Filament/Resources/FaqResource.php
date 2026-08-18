@@ -21,6 +21,8 @@ class FaqResource extends Resource
     protected static ?int $navigationSort = 8;
 
     protected static ?string $navigationLabel = 'FAQ管理';
+    protected static ?string $modelLabel = 'FAQ';
+    protected static ?string $pluralModelLabel = 'FAQ管理';
 
     public static function getNavigationLabel(): string
     {

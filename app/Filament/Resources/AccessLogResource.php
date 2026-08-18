@@ -21,6 +21,8 @@ class AccessLogResource extends Resource
     protected static ?int $navigationSort = 21;
 
     protected static ?string $navigationLabel = '訪問日誌';
+    protected static ?string $modelLabel = '訪問日誌';
+    protected static ?string $pluralModelLabel = '訪問日誌';
 
     public static function getNavigationLabel(): string
     {

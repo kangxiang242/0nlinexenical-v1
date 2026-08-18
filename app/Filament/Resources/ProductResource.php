@@ -20,6 +20,8 @@ class ProductResource extends Resource
     protected static ?int $navigationSort = 2;
 
     protected static ?string $navigationLabel = '商品管理';
+    protected static ?string $modelLabel = '商品';
+    protected static ?string $pluralModelLabel = '商品管理';
 
     public static function getNavigationLabel(): string
     {
@@ -97,10 +99,10 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('img')
+                Tables\Columns\TextColumn::make('img')
                     ->label('圖片')
-                    ->circular()
-                    ->size(50),
+                    ->html()
+                    ->formatStateUsing(fn ($record) => $record->img ? '<img src="' . asset('uploads/' . $record->img) . '" style="width:50px;height:50px;border-radius:50%;object-fit:cover" />' : ''),
                 Tables\Columns\TextColumn::make('name')
                     ->label('商品名稱')
                     ->searchable()

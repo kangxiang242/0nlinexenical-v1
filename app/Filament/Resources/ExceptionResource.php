@@ -21,6 +21,8 @@ class ExceptionResource extends Resource
     protected static ?int $navigationSort = 20;
 
     protected static ?string $navigationLabel = '異常日誌';
+    protected static ?string $modelLabel = '異常日誌';
+    protected static ?string $pluralModelLabel = '異常日誌';
 
     public static function getNavigationLabel(): string
     {
