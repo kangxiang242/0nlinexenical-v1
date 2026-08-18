@@ -36,7 +36,6 @@ class AdminPanelProvider extends PanelProvider
                 'primary' => Color::Indigo,
             ])
             ->favicon(\App\Services\ConfigService::get('favicon') ? asset('uploads/' . \App\Services\ConfigService::get('favicon')) : asset('favicon.ico'))
-            ->locale('zh_TW')
             ->darkMode(false)
             ->sidebarCollapsibleOnDesktop()
             ->maxContentWidth('full')
