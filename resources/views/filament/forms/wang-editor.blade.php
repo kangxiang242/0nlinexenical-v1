@@ -89,12 +89,32 @@
                 var initialHtml = alpineVal;
 
                 var { createEditor, createToolbar } = window.wangEditor;
-                var editor = createEditor({
-                    selector: '#{{ $htmlId }}-ed',
-                    html: initialHtml,
-                    config: config,
-                    mode: '{{ $mode }}',
-                });
+                var editor;
+                try {
+                    editor = createEditor({
+                        selector: '#{{ $htmlId }}-ed',
+                        html: initialHtml,
+                        config: config,
+                        mode: '{{ $mode }}',
+                    });
+                } catch (err) {
+                    // 兼容旧版 Word/富文本导出的 HTML（MsoNormal 等），清洗后重建
+                    var cleaned = initialHtml;
+                    try {
+                        var doc = new DOMParser().parseFromString(initialHtml, 'text/html');
+                        doc.querySelectorAll('[style]').forEach(function (el) { el.removeAttribute('style'); });
+                        doc.querySelectorAll('[class]').forEach(function (el) { el.removeAttribute('class'); });
+                        cleaned = doc.body.innerHTML || '<p><br></p>';
+                    } catch (e2) {
+                        cleaned = '<p><br></p>';
+                    }
+                    editor = createEditor({
+                        selector: '#{{ $htmlId }}-ed',
+                        html: cleaned,
+                        config: config,
+                        mode: '{{ $mode }}',
+                    });
+                }
 
                 createToolbar({
                     editor: editor,
