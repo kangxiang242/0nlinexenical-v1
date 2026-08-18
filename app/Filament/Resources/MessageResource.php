@@ -26,7 +26,7 @@ class MessageResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return '訊息管理';
+        return '留言管理';
     }
 
     public static function form(Form $form): Form
