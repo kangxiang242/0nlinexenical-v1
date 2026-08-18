@@ -35,20 +35,12 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Indigo,
             ])
-            ->font('Inter')
-            ->favicon(asset('favicon.ico'))
+            ->favicon(\App\Services\ConfigService::get('favicon') ? asset('uploads/' . \App\Services\ConfigService::get('favicon')) : asset('favicon.ico'))
+            ->darkMode(false)
+            ->sidebarCollapsibleOnDesktop()
+            ->maxContentWidth('full')
             ->spa()
             ->collapsibleNavigationGroups()
-            ->navigationGroups([
-                '訂單管理',
-                '商品管理',
-                '評論管理',
-                '內容管理',
-                'SEO 管理',
-                '客服管理',
-                '工具',
-                '系統管理',
-            ])
             ->renderHook(\Filament\View\PanelsRenderHook::HEAD_START, fn () => view('filament.hooks.custom-styles'))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')

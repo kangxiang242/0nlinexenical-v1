@@ -20,9 +20,9 @@ class MessageResource extends Resource
 
     protected static ?string $navigationGroup = '客服管理';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 6;
 
-    protected static ?string $navigationLabel = '訊息管理';
+    protected static ?string $navigationLabel = '留言管理';
 
     public static function getNavigationLabel(): string
     {

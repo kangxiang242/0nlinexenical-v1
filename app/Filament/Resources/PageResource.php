@@ -18,7 +18,7 @@ class PageResource extends Resource
 
     protected static ?string $navigationGroup = '內容管理';
 
-    protected static ?int $navigationSort = 8;
+    protected static ?int $navigationSort = 9;
 
     protected static ?string $navigationLabel = '單頁管理';
 
