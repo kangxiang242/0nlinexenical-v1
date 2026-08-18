@@ -89,37 +89,26 @@
                 var initialHtml = alpineVal;
 
                 var { createEditor, createToolbar } = window.wangEditor;
+                // 兼容旧版 Word/富文本导出的 HTML（MsoNormal 等）：检测到 Office 标记直接清洗，避免创建失败后重复创建
                 var editor;
                 try {
+                    var needClean = /MsoNormal|mso-|o:p|xml:namespace|font-family|background-color|text-align:center;\s*text-align/i.test(initialHtml);
+                    var useHtml = initialHtml;
+                    if (needClean) {
+                        var doc = new DOMParser().parseFromString(initialHtml, 'text/html');
+                        doc.querySelectorAll('script,style').forEach(function (el) { el.remove(); });
+                        var text = (doc.body.textContent || '').replace(/\u00a0/g, ' ').trim();
+                        var lines = text.split(/\n+/).map(function (l) { return l.trim(); }).filter(Boolean);
+                        useHtml = lines.length ? lines.map(function (l) { return '<p>' + l + '</p>'; }).join('') : '<p><br></p>';
+                    }
                     editor = createEditor({
                         selector: '#{{ $htmlId }}-ed',
-                        html: initialHtml,
+                        html: useHtml,
                         config: config,
                         mode: '{{ $mode }}',
                     });
                 } catch (err) {
-                    // 兼容旧版 Word/富文本导出的 HTML（MsoNormal 等），清洗后重建
-                    var cleaned = initialHtml;
-                    try {
-                        var doc = new DOMParser().parseFromString(initialHtml, 'text/html');
-                        doc.querySelectorAll('script,style,xml,o\:p,o\:p,o\:fld').forEach(function (el) { el.remove(); });
-                        // 移除 Office 样式/类后，若仍有无法解析的结构则降为纯文本段落
-                        var text = (doc.body.textContent || '').replace(/\u00a0/g, ' ').trim();
-                        var lines = text.split(/\n+/).map(function (l) { return l.trim(); }).filter(Boolean);
-                        cleaned = lines.length ? lines.map(function (l) { return '<p>' + l + '</p>'; }).join('') : '<p><br></p>';
-                    } catch (e2) {
-                        cleaned = '<p><br></p>';
-                    }
-                    try {
-                        editor = createEditor({
-                            selector: '#{{ $htmlId }}-ed',
-                            html: cleaned,
-                            config: config,
-                            mode: '{{ $mode }}',
-                        });
-                    } catch (e3) {
-                        editor = null;
-                    }
+                    editor = null;
                 }
 
                 if (!editor) {
