@@ -1,4 +1,38 @@
 <style>
+    /* Sidebar width optimization - narrower sidebar, wider content（对齐 twshop-v1） */
+    .fi-sidebar {
+        width: 10.5rem !important;
+    }
+
+    /* 右侧内容区左右边距加大（对齐 twshop-v1） */
+    .fi-main {
+        padding-left: 3rem !important;
+        padding-right: 3rem !important;
+    }
+
+    .fi-sidebar .fi-brand-logo-text {
+        font-size: 0.8125rem !important;
+    }
+
+    .fi-sidebar .fi-sidebar-nav-item-label {
+        font-size: 0.75rem !important;
+    }
+
+    .fi-sidebar .fi-icon {
+        width: 1.125rem !important;
+        height: 1.125rem !important;
+    }
+
+    .fi-sidebar .fi-sidebar-nav > ul > li {
+        padding-inline: 0.25rem !important;
+    }
+
+    .fi-sidebar .fi-sidebar-nav-item {
+        gap: 0.375rem !important;
+        padding-block: 0.3125rem !important;
+        padding-inline: 0.375rem !important;
+    }
+
     /* 编辑/新增页：左标题、右编辑框 */
     .fi-resource-edit-record-page .fi-fo-field-wrp > .grid,
     .fi-resource-create-record-page .fi-fo-field-wrp > .grid {

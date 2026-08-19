@@ -47,12 +47,14 @@ class ProductResource extends Resource
                         Forms\Components\FileUpload::make('img')
                             ->label('主圖')
                             ->image()
-                            ->directory('products')
+                            ->disk('admin')
+                            ->directory('product')
                             ->maxSize(2048),
                         Forms\Components\FileUpload::make('m_img')
                             ->label('手機版主圖')
                             ->image()
-                            ->directory('products/mobile')
+                            ->disk('admin')
+                            ->directory('product')
                             ->maxSize(2048),
                         Forms\Components\TextInput::make('price')
                             ->label('價格')

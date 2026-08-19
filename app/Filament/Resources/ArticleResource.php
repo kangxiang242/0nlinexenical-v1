@@ -49,7 +49,8 @@ class ArticleResource extends Resource
                         Forms\Components\FileUpload::make('img')
                             ->label('文章圖片')
                             ->image()
-                            ->directory('articles')
+                            ->disk('admin')
+                            ->directory('article')
                             ->maxSize(2048),
                         Forms\Components\TextInput::make('img_alt')
                             ->label('圖片Alt文字')

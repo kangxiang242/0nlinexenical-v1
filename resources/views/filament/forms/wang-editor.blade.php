@@ -67,8 +67,14 @@
                 },
             };
 
+            var weRetry = 0;
+
             function initEditor() {
-                if (typeof window.wangEditor === 'undefined') { setTimeout(initEditor, 100); return; }
+                if (typeof window.wangEditor === 'undefined') {
+                    if (++weRetry > 80) return;
+                    setTimeout(initEditor, 100);
+                    return;
+                }
                 if (document.getElementById('{{ $htmlId }}').__weDone) return;
 
                 // 等待 Alpine Livewire 数据就绪
@@ -80,7 +86,8 @@
                 if (!alpineVal && h) {
                     alpineVal = h.value || h.getAttribute('value') || '';
                 }
-                if (!alpineVal || alpineVal === '<p><br></p>') {
+                // 值为空时最多等待 5 秒（25 次 × 200ms），避免字段原本为 NULL 时永不初始化
+                if ((!alpineVal || alpineVal === '<p><br></p>') && weRetry++ < 25) {
                     setTimeout(initEditor, 200);
                     return;
                 }
