@@ -18,9 +18,8 @@ class MessageResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-left-ellipsis';
 
-    protected static ?string $navigationGroup = '客服管理';
-
-    protected static ?int $navigationSort = 6;
+    // 留言管理放到文章管理(ArticleResource, sort 3)下面，归入顶部无分组导航
+    protected static ?int $navigationSort = 4;
 
     protected static ?string $navigationLabel = '留言管理';
     protected static ?string $modelLabel = '留言';
