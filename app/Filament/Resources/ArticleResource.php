@@ -7,7 +7,6 @@ use App\Models\Article;
 use App\Models\ArticleCate;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -71,34 +70,11 @@ class ArticleResource extends Resource
                     ])
                     ->columns(2),
 
-                Forms\Components\Section::make('內容模式')
-                    ->schema([
-                        Forms\Components\Select::make('mode')
-                            ->label('內容模式')
-                            ->options([
-                                0 => '在線編輯器',
-                                1 => 'HTML代碼包',
-                            ])
-                            ->default(0)
-                            ->required()
-                            ->live()
-                            ->hint('「HTML代碼包」需上傳 .zip，前台將以 iframe 載入'),
-                    ]),
-
                 Forms\Components\Section::make('內容')
                     ->schema([
                         \App\Filament\Components\WangEditor::make('content')
                             ->label('文章內容')
-                            ->columnSpanFull()
-                            ->visible(fn (Get $get) => (int) $get('mode') === 0),
-                        Forms\Components\FileUpload::make('html_file')
-                            ->label('HTML代碼包')
-                            ->acceptedFileTypes(['application/zip'])
-                            ->disk('admin')
-                            ->directory('article_html')
-                            ->maxSize(51200)
-                            ->visible(fn (Get $get) => (int) $get('mode') === 1)
-                            ->helperText('請上傳包含 index.html 的 .zip 檔案，儲存後會自動解壓'),
+                            ->columnSpanFull(),
                     ]),
 
                 Forms\Components\Section::make('SEO設定')
